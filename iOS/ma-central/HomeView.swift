@@ -9,11 +9,15 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        ScrollView {
-            VStack {
+        NavigationView {
+            ScrollView {
                 VStack {
-                    Text("Jayen")
-                        .font(.title)
+                    HStack {
+                        Text("Jayen")
+                            .font(.largeTitle)
+                            .padding(.leading)
+                        Spacer()
+                    }
                     HStack {
                         Text("129")
                             .font(.title2)
@@ -31,7 +35,11 @@ struct HomeView: View {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(0...3, id: \.self) { id in
-                                CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: 275, y: 325))
+                                NavigationLink(destination: {
+                                    EventDetailView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", details: "Event \(id) details")
+                                }, label: {
+                                    CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: 275, y: 325))
+                                })
                             }
                         }
                     }
@@ -45,7 +53,11 @@ struct HomeView: View {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(0...2, id: \.self) { id in
-                                CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: 275, y: 325))
+                                NavigationLink(destination: {
+                                    EventDetailView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", details: "Signed-Up Event \(id) details")
+                                }, label: {
+                                    CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: 275, y: 325))
+                                })
                             }
                         }
                     }
@@ -53,6 +65,8 @@ struct HomeView: View {
                 }
                 .padding(.vertical)
             }
+            .navigationTitle("App Name")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

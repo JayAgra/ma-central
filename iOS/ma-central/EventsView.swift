@@ -14,7 +14,11 @@ struct EventsView: View {
                 ScrollView(.vertical) {
                     VStack {
                         ForEach(0...10, id: \.self) { id in
-                            CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: geometry.size.width * 0.9, y: geometry.size.width * 0.45))
+                            NavigationLink(destination: {
+                                EventDetailView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", details: "Event \(id) details")
+                            }, label: {
+                                CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: geometry.size.width * 0.9, y: geometry.size.width * 0.45))
+                            })
                         }
                     }
                 }
