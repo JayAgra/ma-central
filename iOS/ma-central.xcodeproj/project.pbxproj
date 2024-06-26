@@ -28,6 +28,8 @@
 		F50AD6AB2C06A55E00A15A2C /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F50AD6AD2C06A55F00A15A2C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F50AD6B02C06A55F00A15A2C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F52884822C2BA15800B6F0DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F52884832C2BA17B00B6F0DD /* ma-central.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ma-central.entitlements"; sourceTree = "<group>"; };
 		F5436F862C10E17A00ED6D83 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F5436F882C10E31D00ED6D83 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		F5436F8A2C10E35200ED6D83 /* EventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
@@ -69,6 +71,8 @@
 		F50AD6A82C06A55E00A15A2C /* ma-central */ = {
 			isa = PBXGroup;
 			children = (
+				F52884832C2BA17B00B6F0DD /* ma-central.entitlements */,
+				F52884822C2BA15800B6F0DD /* Info.plist */,
 				F50AD6A92C06A55E00A15A2C /* ma_centralApp.swift */,
 				F5436F862C10E17A00ED6D83 /* AppState.swift */,
 				F5436F8E2C10E38600ED6D83 /* LoginView.swift */,
@@ -305,12 +309,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "ma-central/ma-central.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ma-central/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ma-central/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "M-A Central";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -342,12 +348,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "ma-central/ma-central.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ma-central/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ma-central/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "M-A Central";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

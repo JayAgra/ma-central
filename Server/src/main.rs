@@ -87,7 +87,7 @@ async fn auth_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
         .json(db_auth::Id { id: user.id }))
 }
 
-const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-\"]}}";
+const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
 }

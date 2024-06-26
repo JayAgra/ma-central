@@ -8,10 +8,7 @@
 import Foundation
 
 func checkLoginState(completion: @escaping (Bool) -> Void) {
-    // for testing
-    completion(true)
-    /*
-    guard let url = URL(string: "https://beartracks.io/api/v1/whoami") else {
+    guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/auth/whoami") else {
         completion(false)
         return
     }
@@ -29,5 +26,4 @@ func checkLoginState(completion: @escaping (Bool) -> Void) {
         }
     }
     task.resume()
-    */
 }
