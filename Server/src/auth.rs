@@ -89,7 +89,7 @@ pub async fn login(
         return HttpResponse::BadRequest()
             .status(StatusCode::from_u16(400).unwrap())
             .insert_header(("Cache-Control", "no-cache"))
-            .body("{\"status\": \"bad\"}");
+            .body("{\"status\": \"bad_s1\"}");
     }
     // query was OK, unwrap and set to target_user
     let target_user = target_user_temp.unwrap();
@@ -104,7 +104,7 @@ pub async fn login(
             return HttpResponse::BadRequest()
                 .status(StatusCode::from_u16(400).unwrap())
                 .insert_header(("Cache-Control", "no-cache"))
-                .body("{\"status\": \"bad\"}");
+                .body("{\"status\": \"bad_s2\"}");
         }
         // check that the provided password's hash is equal to the correct password's hash
         if Argon2::default()
@@ -130,7 +130,7 @@ pub async fn login(
             return HttpResponse::BadRequest()
                 .status(StatusCode::from_u16(400).unwrap())
                 .insert_header(("Cache-Control", "no-cache"))
-                .body("{\"status\": \"bad\"}");
+                .body("{\"status\": \"bad_s3\"}");
         }
     // target user is zero, send failure
     } else {
@@ -138,7 +138,7 @@ pub async fn login(
         return HttpResponse::BadRequest()
             .status(StatusCode::from_u16(400).unwrap())
             .insert_header(("Cache-Control", "no-cache"))
-            .body("{\"status\": \"bad\"}");
+            .body("{\"status\": \"bad_s4\"}");
     }
 }
 

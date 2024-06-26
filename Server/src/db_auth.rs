@@ -84,7 +84,7 @@ pub async fn get_user_id(pool: &Pool, id: String) -> Result<User, Error> {
 }
 
 fn get_user_id_entry(conn: Connection, id: String) -> Result<User, rusqlite::Error> {
-    let mut stmt = conn.prepare("SELECT * FROM users WHERE id=?1")?;
+    let mut stmt = conn.prepare("SELECT * FROM users WHERE id=?1;")?;
     stmt.query_row([id], |row| {
         Ok(User {
             id: row.get(0)?,
@@ -110,7 +110,7 @@ pub async fn get_user_username(pool: &Pool, username: String) -> Result<User, Er
 }
 
 fn get_user_username_entry(conn: Connection, id: String) -> Result<User, rusqlite::Error> {
-    let mut stmt = conn.prepare("SELECT * FROM users WHERE username=?1")?;
+    let mut stmt = conn.prepare("SELECT * FROM users WHERE username=?1;")?;
     stmt.query_row([id], |row| {
         Ok(User {
             id: row.get(0)?,
