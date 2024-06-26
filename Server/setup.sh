@@ -20,7 +20,7 @@ cd ma-central/Server                                                    # ~/macs
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh          # install rust
 source "$HOME/.cargo/env"                                               # source (needed if rust is newly installed)
 cargo build -r                                                          # build release
-cp target/release/masvc ../../masvc                                     # copy built object from target to macsvc
+cp target/release/macsvc ../../macsvc                                   # copy built object from target to macsvc
 echo "###"                                                              #
 echo "macsvc $latestTag is now installed"                               # print version number
 echo "please edit the .env file in the new macsvc directory"            # edit the env file for program to run correctly
