@@ -1,4 +1,5 @@
 sudo apt-get update                                                     #
+sudo apt-get install gcc                                                #
 sudo apt-get install libssl-dev                                         # linux build requirements
 sudo apt-get install pkg-config                                         #
 mkdir macsvc && cd macsvc                                               # ~/macsvc

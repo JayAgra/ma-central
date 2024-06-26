@@ -160,7 +160,7 @@ fn create_user_entry(conn: Connection, student_id: String, username: String, ful
         student_id,
         username,
         full_name,
-        pass_hash: "".to_string(),
+        pass_hash: password_hash,
         lifetime: 0,
         score: 0,
         data: "".to_string(),
