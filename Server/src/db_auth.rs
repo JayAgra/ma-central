@@ -27,6 +27,7 @@ type PointQueryResult = Result<Vec<UserPoints>, rusqlite::Error>;
 
 pub enum AuthData {
     GetUserScores,
+    GetUserScoresTop,
 }
 
 pub async fn execute_scores(pool: &Pool, query: AuthData) -> Result<Vec<UserPoints>, Error> {
@@ -37,6 +38,7 @@ pub async fn execute_scores(pool: &Pool, query: AuthData) -> Result<Vec<UserPoin
     web::block(move || {
         match query {
             AuthData::GetUserScores => get_user_scores(conn),
+            AuthData::GetUserScoresTop => get_user_scores_top(conn),
         }
     })
     .await?
@@ -45,6 +47,11 @@ pub async fn execute_scores(pool: &Pool, query: AuthData) -> Result<Vec<UserPoin
 
 fn get_user_scores(conn: Connection) -> PointQueryResult {
     let stmt = conn.prepare("SELECT id, username, lifetime, score FROM users ORDER BY lifetime DESC;")?;
+    get_score_rows(stmt)
+}
+
+fn get_user_scores_top(conn: Connection) -> PointQueryResult {
+    let stmt = conn.prepare("SELECT id, username, lifetime, score FROM users ORDER BY lifetime DESC LIMIT 10;")?;
     get_score_rows(stmt)
 }
 

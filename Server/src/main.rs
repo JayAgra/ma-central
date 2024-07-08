@@ -21,6 +21,7 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock};
 
 mod auth;
+mod db_main;
 mod db_auth;
 mod session;
 
@@ -85,6 +86,20 @@ async fn auth_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(db_auth::Id { id: user.id }))
+}
+
+async fn board_get_lifetime_top(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "max-age=60"))
+        .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?)
+    )
+}
+
+async fn board_get_lifetime_all(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "max-age=60"))
+        .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?)
+    )
 }
 
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\"]}}";
@@ -171,10 +186,6 @@ async fn main() -> io::Result<()> {
                 web::resource("/apple-app-site-association")
                     .route(web::get().to(misc_apple_app_site_association)),
             )
-            //
-            // auth endpoints
-            //
-            // get
             .service(
                 web::resource("/api/v1/auth/logout")
                     .route(web::get().to(auth_get_logout))
@@ -195,6 +206,14 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/auth/delete")
                     .route(web::post().to(auth_post_delete)),
+            )
+            .service(
+                web::resource("/api/v1/board/lifetime/top")
+                    .route(web::get().to(board_get_lifetime_top)),
+            )
+            .service(
+                web::resource("/api/v1/board/lifetime/all")
+                    .route(web::get().to(board_get_lifetime_all)),
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?

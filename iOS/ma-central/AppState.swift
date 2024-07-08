@@ -12,6 +12,13 @@ enum Tab {
     case home, events, settings
 }
 
+struct UserData {
+    let id: Int
+    let username, full_name: String
+    let lifetime, score: Int
+    let data: String
+}
+
 class AppState: ObservableObject {
 #if targetEnvironment(macCatalyst)
     @Published public var selectedTab: Tab? = .home
