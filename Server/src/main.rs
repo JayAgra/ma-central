@@ -18,7 +18,7 @@ use openssl::{
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock};
+use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock, time::{SystemTime, UNIX_EPOCH}};
 
 mod auth;
 mod db_main;
@@ -56,6 +56,7 @@ impl FromRequest for db_auth::User {
 
 struct Databases {
     auth: db_auth::Pool,
+    main: db_main::Pool,
 }
 
 fn get_secret_key() -> Key {
@@ -95,11 +96,134 @@ async fn board_get_lifetime_top(db: web::Data<Databases>) -> Result<HttpResponse
     )
 }
 
-async fn board_get_lifetime_all(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn board_get_lifetime_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "max-age=60"))
         .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?)
     )
+}
+
+async fn events_get_all(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.data == "admin" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "max-age=150"))
+            .json(db_main::execute_events(&db.main, db_main::EventQuery::GetAllEvents, 0).await?)
+        )
+    } else {
+        Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn events_get_future(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    let start = SystemTime::now();
+    let since_the_epoch = start
+        .duration_since(UNIX_EPOCH)
+        .expect("time just went fucking backwards");
+
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "max-age=150"))
+        .json(db_main::execute_events(&db.main, db_main::EventQuery::GetFutureEvents, since_the_epoch.as_millis()).await?)
+    )
+}
+
+async fn tickets_get_all(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.data == "admin" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(db_main::execute_tickets(&db.main, db_main::TicketQuery::GetAllTickets, "".to_string()).await?))
+    } else {
+        Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn tickets_get_query(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    match req.match_info().get("query_type").unwrap() {
+        "event" => {
+            if user.data == "admin" {
+                Ok(HttpResponse::Ok()
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .json(
+                        db_main::execute_tickets(
+                            &db.main,
+                            db_main::TicketQuery::GetEventTickets,
+                            req.match_info().get("query_data").unwrap().to_string()
+                        ).await?
+                    )
+                )
+            } else {
+                Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
+            }
+        }
+        "user" => {
+            if user.data == "admin" {
+                Ok(HttpResponse::Ok()
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .json(
+                        db_main::execute_tickets(
+                            &db.main,
+                            db_main::TicketQuery::GetUserTickets,
+                            req.match_info().get("query_data").unwrap().to_string()
+                        ).await?
+                    )
+                )
+            } else {
+                Ok(HttpResponse::Ok()
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .json(
+                        db_main::execute_tickets(
+                            &db.main,
+                            db_main::TicketQuery::GetUserTickets,
+                            user.id.to_string()
+                        ).await?
+                    )
+                )
+            }
+        }
+        "event_valid" => {
+            if user.data == "admin" {
+                Ok(HttpResponse::Ok()
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .json(
+                        db_main::execute_tickets(
+                            &db.main,
+                            db_main::TicketQuery::GetValidEventTickets,
+                            req.match_info().get("query_data").unwrap().to_string()
+                        ).await?
+                    )
+                )
+            } else {
+                Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
+            }
+        }
+        "user_valid" => {
+            if user.data == "admin" {
+                Ok(HttpResponse::Ok()
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .json(
+                        db_main::execute_tickets(
+                            &db.main,
+                            db_main::TicketQuery::GetValidUserTickets,
+                            req.match_info().get("query_data").unwrap().to_string(),
+                        ).await?
+                    )
+                )
+            } else {
+                Ok(HttpResponse::Ok()
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .json(
+                        db_main::execute_tickets(
+                            &db.main,
+                            db_main::TicketQuery::GetValidUserTickets,
+                            user.id.to_string(),
+                        ).await?
+                    )
+                )
+            }
+        }
+        _ => {
+            Err(error::ErrorBadRequest("{\"status\": \"bad_query_type\"}"))
+        }
+    }
 }
 
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\"]}}";
@@ -121,6 +245,13 @@ async fn main() -> io::Result<()> {
     let auth_db_connection = auth_db_pool.get().expect("auth db: connection failed");
     auth_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("auth db: WAL failed");
     drop(auth_db_connection);
+
+    // man database connection
+    let main_db_manager = SqliteConnectionManager::file("data_main.db");
+    let main_db_pool = db_auth::Pool::new(main_db_manager).unwrap();
+    let main_db_connection = main_db_pool.get().expect("main db: connection failed");
+    main_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("main db: WAL failed");
+    drop(main_db_connection);
 
     let secret_key = get_secret_key();
 
@@ -150,6 +281,7 @@ async fn main() -> io::Result<()> {
             // add databases to app data
             .app_data(web::Data::new(Databases {
                 auth: auth_db_pool.clone(),
+                main: main_db_pool.clone(),
             }))
             // add sessions to app data
             .app_data(sessions.clone())
@@ -214,6 +346,22 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/board/lifetime/all")
                     .route(web::get().to(board_get_lifetime_all)),
+            )
+            .service(
+                web::resource("/api/v1/events/all")
+                    .route(web::get().to(events_get_all)),
+            )
+            .service(
+                web::resource("/api/v1/events/future")
+                    .route(web::get().to(events_get_future)),
+            )
+            .service(
+                web::resource("/api/v1/tickets_all")
+                    .route(web::get().to(tickets_get_all)),
+            )
+            .service(
+                web::resource("/api/v1/tickets/{query_type}/{query_data}")
+                    .route(web::get().to(tickets_get_query)),
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
