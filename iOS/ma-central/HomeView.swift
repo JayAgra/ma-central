@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var firstLoad = false
+    @EnvironmentObject var appState: AppState
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -33,40 +36,34 @@ struct HomeView: View {
                         .font(.title2)
                         .padding(.leading)
                     ScrollView(.horizontal) {
-                        HStack {
-                            ForEach(0...3, id: \.self) { id in
-                                NavigationLink(destination: {
-                                    EventDetailView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", details: "Event \(id) details")
-                                }, label: {
-                                    CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: 275, y: 325))
-                                })
-                            }
-                        }
+                        HomeViewUpcomingCarousel()
+                            .environmentObject(appState)
                     }
                     .background(Color.secondary.opacity(0.1))
                 }
                 .padding(.vertical)
+                /*
                 VStack(alignment: .leading) {
                     Text("Your Events")
                         .font(.title2)
                         .padding(.leading)
                     ScrollView(.horizontal) {
-                        HStack {
-                            ForEach(0...2, id: \.self) { id in
-                                NavigationLink(destination: {
-                                    EventDetailView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", details: "Signed-Up Event \(id) details")
-                                }, label: {
-                                    CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: 275, y: 325))
-                                })
-                            }
-                        }
+                        HomeViewMeCarousel()
+                            .environmentObject(appState)
                     }
                     .background(Color.secondary.opacity(0.1))
                 }
                 .padding(.vertical)
+                */
             }
             .navigationTitle("App Name")
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .onAppear() {
+            if !firstLoad {
+                appState.refreshFutureEvents()
+                firstLoad = true
+            }
         }
     }
 }

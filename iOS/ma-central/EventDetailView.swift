@@ -6,17 +6,21 @@
 //
 
 import SwiftUI
+import Kingfisher
+import MapKit
 
 struct EventDetailView: View {
     var image: String
     var date: String
     var title: String
     var location: String
+    var latitude: Double
+    var longitude: Double
     var details: String
     
     var body: some View {
         VStack {
-            Image(image)
+            KFImage(URL(string: image == "" ? "https://jayagra.com/static-ish/IMG_6901.png?v=101" : image)!)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .ignoresSafeArea(.container)
@@ -34,6 +38,35 @@ struct EventDetailView: View {
                     .foregroundColor(.secondary)
                 Text(details)
                     .foregroundColor(.primary)
+/*
+ if #available(iOS 17.0, *) {
+     Spacer()
+     Map(initialPosition:
+             MapCameraPosition.region(
+                 MKCoordinateRegion(
+                     center:
+                         CLLocationCoordinate2D(
+                             latitude: latitude,
+                             longitude: longitude
+                         ),
+                     span:
+                         MKCoordinateSpan(
+                             latitudeDelta: 0.05,
+                             longitudeDelta: 0.05
+                         )
+                 )
+             )
+     ) {
+         Marker(title, coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+     }
+     .mapStyle(.standard)
+     .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.25)
+     .cornerRadius(10)
+     .padding(.vertical)
+ } else {
+     // Fallback on earlier versions
+ }
+ */
                 Spacer()
                 Button(action: {
                     
@@ -49,5 +82,5 @@ struct EventDetailView: View {
 }
 
 #Preview {
-    EventDetailView(image: "ImagePlaceholder", date: "Jan 1, 1970", title: "Event Title", location: "Event Location", details: "Details About Event")
+    EventDetailView(image: "ImagePlaceholder", date: "Jan 1, 1970", title: "Event Title", location: "Event Location", latitude: 0.0, longitude: 0.0, details: "Details About Event")
 }

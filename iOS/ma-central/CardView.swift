@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct CardView: View {
     var image: String
@@ -17,9 +18,9 @@ struct CardView: View {
     var body: some View {
         if dimensions.x > dimensions.y {
             ZStack {
-                Image(image)
+                KFImage(URL(string: image == "" ? "https://jayagra.com/static-ish/IMG_6901.png?v=101" : image)!)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .cornerRadius(10)
                     .frame(width: dimensions.x, height: dimensions.y)
                     .padding()
@@ -44,7 +45,7 @@ struct CardView: View {
             }
         } else {
             VStack {
-                Image(image)
+                KFImage(URL(string: image == "" ? "https://jayagra.com/static-ish/IMG_6901.png?v=101" : image)!)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                 HStack {

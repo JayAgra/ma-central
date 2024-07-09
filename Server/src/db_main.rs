@@ -14,7 +14,7 @@ pub struct Event {
     pub latitude: f64,
     pub longitude: f64,
     pub details: String,
-    pub image: String
+    pub image: String // 640x320 or 1280x640
 }
 
 #[derive(Serialize)]

@@ -8,16 +8,18 @@
 import SwiftUI
 
 struct EventsView: View {
+    @EnvironmentObject var appState: AppState
+    
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
                 ScrollView(.vertical) {
                     VStack {
-                        ForEach(0...10, id: \.self) { id in
+                        ForEach(appState.futureEvents, id: \.id) { event in
                             NavigationLink(destination: {
-                                EventDetailView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", details: "Event \(id) details")
+                                EventDetailView(image: event.image, date: String(event.start_time), title: event.title, location: event.human_location, latitude: event.latitude, longitude: event.longitude, details: event.details)
                             }, label: {
-                                CardView(image: "ImagePlaceholder", date: "Jan \(id + 1), 1970", title: "Event Number \(id)", location: "Event Location", dimensions: CGPoint(x: geometry.size.width * 0.9, y: geometry.size.width * 0.45))
+                                CardView(image: event.image, date: String(event.start_time), title: event.title, location: event.human_location, dimensions: CGPoint(x: geometry.size.width * 0.9, y: geometry.size.width * 0.45))
                             })
                         }
                     }
@@ -25,6 +27,9 @@ struct EventsView: View {
                 .frame(width: geometry.size.width, height: geometry.size.height)
                 .navigationTitle("Events")
             }
+        }
+        .refreshable {
+            appState.refreshFutureEvents()
         }
     }
 }
