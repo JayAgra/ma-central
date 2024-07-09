@@ -114,7 +114,7 @@ async fn events_get_all(db: web::Data<Databases>, user: db_auth::User) -> Result
     }
 }
 
-async fn events_get_future(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn events_get_future(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
     let start = SystemTime::now();
     let since_the_epoch = start
         .duration_since(UNIX_EPOCH)
