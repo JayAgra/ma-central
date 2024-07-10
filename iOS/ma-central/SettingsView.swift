@@ -23,8 +23,8 @@ struct SettingsView: View {
                         Button("Log Out") {
                             if let cookies = HTTPCookieStorage.shared.cookies(
                                 for: sharedSession.configuration.urlCache?.cachedResponse(
-                                    for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(
-                                        string: "https://beartracks.io")!)
+                                    for: URLRequest(url: URL(string: "https://macsvc.jayagra.com")!))?.response.url ?? URL(
+                                        string: "https://macsvc.jayagra.com")!)
                             {
                                 for cookie in cookies {
                                     sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)

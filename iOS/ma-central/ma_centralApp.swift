@@ -42,11 +42,6 @@ struct ma_centralApp: App {
                     }
                 }
                 .preferredColorScheme(.dark)
-                .onAppear {
-                    checkLoginState { isLoggedIn in
-                        appState.loginRequired = !isLoggedIn
-                    }
-                }
                 .environmentObject(appState)
 #else
                 TabView(selection: $appState.selectedTab) {
@@ -70,11 +65,6 @@ struct ma_centralApp: App {
                         .tag(Tab.settings)
                 }
                 .preferredColorScheme(.dark)
-                .onAppear {
-                    checkLoginState { isLoggedIn in
-                        appState.sessionOk = isLoggedIn
-                    }
-                }
                 .environmentObject(appState)
 #endif
             } else {

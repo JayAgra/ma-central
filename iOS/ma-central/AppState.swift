@@ -35,6 +35,10 @@ class AppState: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { _ in }
             .store(in: &cancellables)
+        
+        checkLoginState { isLoggedIn in
+            self.sessionOk = isLoggedIn
+        }
     }
     
     func loadEventsJson(type: String, completionBlock: @escaping ([Event]) -> Void) {
