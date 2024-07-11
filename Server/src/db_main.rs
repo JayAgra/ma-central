@@ -63,7 +63,7 @@ fn get_future_events(conn: Connection, unix_time: u128) -> Result<Vec<Event>, ru
 }
 
 fn get_event_by_id(conn: Connection, event_id: i64) -> Result<Vec<Event>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM events WHERE id={} LIMIT 1;", event_id).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM events WHERE id = {};", event_id).as_str())?;
     get_event_rows(stmt)
 }
 

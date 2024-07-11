@@ -198,6 +198,8 @@ struct EventDetailView: View {
         request.httpShouldHandleCookies = true
         
         let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            debugPrint(response)
+            debugPrint(request)
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     if let data = data {

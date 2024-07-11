@@ -222,8 +222,8 @@ async fn tickets_get_query(req: HttpRequest, db: web::Data<Databases>, user: db_
 }
 
 async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    let event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, req.match_info().get("event_id").unwrap().parse::<i64>().unwrap_or(0) as u128).await?;
-    if !event.is_empty() {
+    let event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, req.match_info().get("event_id").unwrap().parse::<i64>().unwrap() as u128).await?;
+    if event.len() == 1 {
         let start = SystemTime::now();
         let since_the_epoch = start
             .duration_since(UNIX_EPOCH)
