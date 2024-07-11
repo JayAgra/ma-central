@@ -233,7 +233,6 @@ async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user:
             if user_results[0].score >= event[0].ticket_price {
                 let point_deduction = db_auth::update_points(&db.auth, user.id, event[0].ticket_price * -1).await?;
                 if point_deduction {
-                    log::error!("a");
                     Ok(HttpResponse::Ok()
                         .insert_header(("Cache-Control", "no-cache"))
                         .json(db_main::create_ticket(&db.main, event[0].id, user.id, since_the_epoch.as_millis()).await?))
