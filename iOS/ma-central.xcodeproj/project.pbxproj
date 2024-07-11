@@ -21,7 +21,6 @@
 		F5436F8B2C10E35200ED6D83 /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5436F8A2C10E35200ED6D83 /* EventsView.swift */; };
 		F5436F8D2C10E36000ED6D83 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5436F8C2C10E36000ED6D83 /* SettingsView.swift */; };
 		F5436F8F2C10E38600ED6D83 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5436F8E2C10E38600ED6D83 /* LoginView.swift */; };
-		F5436F912C10E39A00ED6D83 /* CheckLoginState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5436F902C10E39A00ED6D83 /* CheckLoginState.swift */; };
 		F5436F932C10E3AF00ED6D83 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5436F922C10E3AF00ED6D83 /* URLSessionConfiguration.swift */; };
 		F583965D2C1A0FFC0079E3C9 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */; };
 		F5932B562C194EDB007D0C18 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5932B552C194EDB007D0C18 /* CardView.swift */; };
@@ -44,7 +43,6 @@
 		F5436F8A2C10E35200ED6D83 /* EventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
 		F5436F8C2C10E36000ED6D83 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5436F8E2C10E38600ED6D83 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		F5436F902C10E39A00ED6D83 /* CheckLoginState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckLoginState.swift; sourceTree = "<group>"; };
 		F5436F922C10E3AF00ED6D83 /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		F5932B552C194EDB007D0C18 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
@@ -93,7 +91,6 @@
 				F5436F8C2C10E36000ED6D83 /* SettingsView.swift */,
 				F5436F882C10E31D00ED6D83 /* SettingsManager.swift */,
 				F53785562C3F62560075EC49 /* Miscellaneous View Components */,
-				F5436F902C10E39A00ED6D83 /* CheckLoginState.swift */,
 				F5436F922C10E3AF00ED6D83 /* URLSessionConfiguration.swift */,
 				F50AD6AD2C06A55F00A15A2C /* Assets.xcassets */,
 				F50AD6AF2C06A55F00A15A2C /* Preview Content */,
@@ -204,7 +201,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5436F912C10E39A00ED6D83 /* CheckLoginState.swift in Sources */,
 				F5379C972C3CEBCF008CABD6 /* HomeViewUpcomingCarousel.swift in Sources */,
 				F5436F932C10E3AF00ED6D83 /* URLSessionConfiguration.swift in Sources */,
 				F5436F892C10E31D00ED6D83 /* SettingsManager.swift in Sources */,

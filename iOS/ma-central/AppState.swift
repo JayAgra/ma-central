@@ -37,11 +37,8 @@ class AppState: ObservableObject {
             .sink { _ in }
             .store(in: &cancellables)
         
-        checkLoginState { isLoggedIn in
-            self.sessionOk = isLoggedIn
-            if self.sessionOk {
-                self.refreshUserJson()
-            }
+        self.loadCurrentUserJson { user in
+            self.currentUser = user
         }
     }
     
@@ -86,20 +83,29 @@ class AppState: ObservableObject {
         request.httpShouldHandleCookies = true
         
         let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    let result = try decoder.decode([UserPoints].self, from: data)
-                    DispatchQueue.main.async {
-                        completionBlock(result)
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    self.sessionOk = true
+                    if let data = data {
+                        do {
+                            let decoder = JSONDecoder()
+                            let result = try decoder.decode([UserPoints].self, from: data)
+                            DispatchQueue.main.async {
+                                completionBlock(result)
+                            }
+                        } catch {
+                            print("parse error")
+                            completionBlock([])
+                        }
+                    } else if let error = error {
+                        print("fetch error: \(error)")
+                        completionBlock([])
                     }
-                } catch {
-                    print("parse error")
-                    completionBlock([])
+                } else {
+                    self.sessionOk = false
                 }
-            } else if let error = error {
-                print("fetch error: \(error)")
-                completionBlock([])
+            } else {
+                self.sessionOk = false
             }
         }
         requestTask.resume()

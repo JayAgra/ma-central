@@ -242,28 +242,28 @@ async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user:
                                     .insert_header(("Cache-Control", "no-cache"))
                                     .json(db_main::create_ticket(&db.main, event[0].id, user.id, since_the_epoch.as_millis()).await?))
                             } else {
-                                log::error!("false on deduction??");
+                                println!("false on deduction??");
                                 Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
                             }
                         } else {
-                            log::error!("balance too low");
+                            println!("balance too low");
                             Err(error::ErrorForbidden("{\"status\": \"balance_too_low\"}"))
                         }
                     } else {
-                        log::error!("ticket sale date expired");
+                        println!("ticket sale date expired");
                         Err(error::ErrorLocked("{\"status\": \"ticket_sale_ended\"}"))
                     }
                 } else {
-                    log::error!("got empty event results");
+                    println!("got empty event results");
                     Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
                 }
             } else {
-                log::error!("got error on int parsing");
+                println!("got error on int parsing");
                 Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
             }
         }
         None => {
-            log::error!("got none on event id param");
+            println!("got none on event id param");
             Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
         }
     }
