@@ -166,8 +166,11 @@ pub async fn create_ticket(pool: &Pool, event_id: i64, user_id: i64, creation_da
 }
 
 fn get_ticket_sql(conn: Connection, event_id: i64, user_id: i64, creation_date: u128) -> Result<Ticket, rusqlite::Error> {
+    log::error!("b");
     let ticket_id: i64 = format!("{}{}{}", event_id.to_string(), format!("{:0>9}", user_id.to_string()), format!("{:0>5}", (creation_date % 1000).to_string())).parse::<i64>().unwrap();
+    log::error!("c");
     let mut stmt = conn.prepare("INSERT INTO tickets (id, event_id, holder_id, single_entry, expended, creation_date) VALUES (?, ?, ?, ?, ?, ?)")?;
+    log::error!("d");
     stmt.execute(params![
         ticket_id,
         event_id,
@@ -176,5 +179,6 @@ fn get_ticket_sql(conn: Connection, event_id: i64, user_id: i64, creation_date: 
         0,
         creation_date as i64
     ])?;
+    log::error!("e");
     Ok(Ticket { id: ticket_id, event_id, holder_id: user_id, single_entry: 1, expended: 0, creation_date: creation_date as i64 })
 }

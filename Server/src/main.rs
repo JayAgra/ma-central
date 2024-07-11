@@ -222,50 +222,32 @@ async fn tickets_get_query(req: HttpRequest, db: web::Data<Databases>, user: db_
 }
 
 async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    let event_id_raw = req.match_info().get("event_id");
-    match event_id_raw {
-        Some(event_id_string) => {
-            let event_id_conversion = event_id_string.parse::<i64>();
-            if event_id_conversion.is_ok() {
-                let event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, event_id_conversion.unwrap_or(0) as u128).await?;
-                if !event.is_empty() {
-                    let start = SystemTime::now();
-                    let since_the_epoch = start
-                        .duration_since(UNIX_EPOCH)
-                        .expect("time just went fucking backwards");
-                    if event[0].last_sale_date > since_the_epoch.as_millis() as i64 {
-                        let user_results = db_auth::execute_scores(&db.auth, db_auth::AuthData::GetCurrentUserScore, user.id).await?;
-                        if user_results[0].score >= event[0].ticket_price {
-                            let point_deduction = db_auth::update_points(&db.auth, user.id, event[0].ticket_price * -1).await?;
-                            if point_deduction {
-                                Ok(HttpResponse::Ok()
-                                    .insert_header(("Cache-Control", "no-cache"))
-                                    .json(db_main::create_ticket(&db.main, event[0].id, user.id, since_the_epoch.as_millis()).await?))
-                            } else {
-                                println!("false on deduction??");
-                                Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
-                            }
-                        } else {
-                            println!("balance too low");
-                            Err(error::ErrorForbidden("{\"status\": \"balance_too_low\"}"))
-                        }
-                    } else {
-                        println!("ticket sale date expired");
-                        Err(error::ErrorLocked("{\"status\": \"ticket_sale_ended\"}"))
-                    }
+    let event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, req.match_info().get("event_id").unwrap().parse::<i64>().unwrap_or(0) as u128).await?;
+    if !event.is_empty() {
+        let start = SystemTime::now();
+        let since_the_epoch = start
+            .duration_since(UNIX_EPOCH)
+            .expect("time just went fucking backwards");
+        if event[0].last_sale_date > since_the_epoch.as_millis() as i64 {
+            let user_results = db_auth::execute_scores(&db.auth, db_auth::AuthData::GetCurrentUserScore, user.id).await?;
+            if user_results[0].score >= event[0].ticket_price {
+                let point_deduction = db_auth::update_points(&db.auth, user.id, event[0].ticket_price * -1).await?;
+                if point_deduction {
+                    log::error!("a");
+                    Ok(HttpResponse::Ok()
+                        .insert_header(("Cache-Control", "no-cache"))
+                        .json(db_main::create_ticket(&db.main, event[0].id, user.id, since_the_epoch.as_millis()).await?))
                 } else {
-                    println!("got empty event results");
-                    Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
+                    Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
                 }
             } else {
-                println!("got error on int parsing");
-                Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
+                Err(error::ErrorForbidden("{\"status\": \"balance_too_low\"}"))
             }
+        } else {
+            Err(error::ErrorLocked("{\"status\": \"ticket_sale_ended\"}"))
         }
-        None => {
-            println!("got none on event id param");
-            Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
-        }
+    } else {
+        Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
     }
 }
 
