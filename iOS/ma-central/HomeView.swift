@@ -50,19 +50,17 @@ struct HomeView: View {
                     if user.id == 0 {
                         GuestAccessRestricted(message: "an account is required to access this feature")
                     } else {
-                        /*
-                         VStack(alignment: .leading) {
-                         Text("Your Events")
-                         .font(.title2)
-                         .padding(.leading)
-                         ScrollView(.horizontal) {
-                         HomeViewMeCarousel()
-                         .environmentObject(appState)
-                         }
-                         .background(Color.secondary.opacity(0.1))
-                         }
+                        VStack(alignment: .leading) {
+                            Text("Your Events")
+                                .font(.title2)
+                                .padding(.leading)
+                            ScrollView(.horizontal) {
+                                HomeViewMeCarousel()
+                                    .environmentObject(appState)
+                            }
+                            .background(Color.secondary.opacity(0.1))
+                        }
                          .padding(.vertical)
-                         */
                     }
                 } else {
                     LoadingDataView(message: "loading account data")

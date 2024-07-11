@@ -1,7 +1,6 @@
 use actix_governor::{Governor, GovernorConfigBuilder};
-use actix_http::StatusCode;
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
-use actix_session::{config::PersistentSession, Session, SessionMiddleware};
+use actix_session::{config::PersistentSession, SessionMiddleware};
 use actix_web::{
     cookie::Key,
     dev::Payload,
@@ -11,14 +10,10 @@ use actix_web::{
     web, App, Error as AWError, FromRequest, HttpRequest, HttpResponse, HttpServer, Responder,
 };
 use dotenv::dotenv;
-use openssl::{
-    ssl::{SslAcceptor, SslFiletype, SslMethod},
-    x509::X509,
-};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
-use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock, time::{SystemTime, UNIX_EPOCH}};
+use std::{collections::HashMap, env, io, pin::Pin, sync::RwLock, time::{SystemTime, UNIX_EPOCH}};
 
 mod auth;
 mod db_main;
@@ -226,6 +221,48 @@ async fn tickets_get_query(req: HttpRequest, db: web::Data<Databases>, user: db_
     }
 }
 
+async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    let event_id_raw = req.match_info().get("event_id");
+    match event_id_raw {
+        Some(event_id_string) => {
+            let event_id_conversion = event_id_string.parse::<i64>();
+            if event_id_conversion.is_ok() {
+                let event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, event_id_conversion.unwrap_or(0) as u128).await?;
+                if !event.is_empty() {
+                    let start = SystemTime::now();
+                    let since_the_epoch = start
+                        .duration_since(UNIX_EPOCH)
+                        .expect("time just went fucking backwards");
+                    if event[0].last_sale_date > since_the_epoch.as_millis() as i64 {
+                        let user_results = db_auth::execute_scores(&db.auth, db_auth::AuthData::GetCurrentUserScore, user.id).await?;
+                        if user_results[0].score >= event[0].ticket_price {
+                            let point_deduction = db_auth::update_points(&db.auth, user.id, event[0].ticket_price * -1).await?;
+                            if point_deduction {
+                                Ok(HttpResponse::Ok()
+                                    .insert_header(("Cache-Control", "no-cache"))
+                                    .json(db_main::create_ticket(&db.main, event[0].id, user.id, since_the_epoch.as_millis()).await?))
+                            } else {
+                                Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
+                            }
+                        } else {
+                            Err(error::ErrorForbidden("{\"status\": \"balance_too_low\"}"))
+                        }
+                    } else {
+                        Err(error::ErrorLocked("{\"status\": \"ticket_sale_ended\"}"))
+                    }
+                } else {
+                    Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
+                }
+            } else {
+                Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
+            }
+        }
+        None => {
+            Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
+        }
+    }
+}
+
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
@@ -362,6 +399,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/tickets/{query_type}/{query_data}")
                     .route(web::get().to(tickets_get_query)),
+            )
+            .service(
+                web::resource("/api/v1/tickets/create/{event_id}")
+                    .route(web::get().to(tickets_create_ticket)),
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?

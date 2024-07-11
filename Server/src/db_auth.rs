@@ -5,7 +5,6 @@ use argon2::{
 };
 use rusqlite::{params, Statement};
 use serde::{Deserialize, Serialize};
-use serde_json;
 use std::str;
 
 #[derive(Serialize)]
@@ -184,7 +183,20 @@ fn create_user_entry(conn: Connection, student_id: String, username: String, ful
     Ok(new_user)
 }
 
-pub fn update_points(conn: Connection, user_id: i64, inc: i64) -> Result<bool, rusqlite::Error> {
+pub async fn update_points(pool: &Pool, user_id: i64, inc: i64) -> Result<bool, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        update_points_sql(conn, user_id, inc)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+
+pub fn update_points_sql(conn: Connection, user_id: i64, inc: i64) -> Result<bool, rusqlite::Error> {
     let mut stmt = conn.prepare("UPDATE users SET score = score + ?1 WHERE id = ?2;")?;
     stmt.execute(params![inc, user_id])?;
     if inc > 0 {

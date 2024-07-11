@@ -1,8 +1,6 @@
 use actix_web::{error, web, Error};
 use rusqlite::{params, Statement};
-use serde::{Deserialize, Serialize};
-use serde_json;
-use std::str;
+use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct Event {
@@ -14,7 +12,9 @@ pub struct Event {
     pub latitude: f64,
     pub longitude: f64,
     pub details: String,
-    pub image: String // 640x320 or 1280x640
+    pub image: String, // 640x320 or 1280x640
+    pub ticket_price: i64,
+    pub last_sale_date: i64,
 }
 
 #[derive(Serialize)]
@@ -32,7 +32,8 @@ pub type Connection = r2d2::PooledConnection<r2d2_sqlite::SqliteConnectionManage
 
 pub enum EventQuery {
     GetAllEvents,
-    GetFutureEvents
+    GetFutureEvents,
+    GetEventById
 }
 
 pub async fn execute_events(pool: &Pool, query: EventQuery, unix_time: u128) -> Result<Vec<Event>, Error> {
@@ -44,6 +45,7 @@ pub async fn execute_events(pool: &Pool, query: EventQuery, unix_time: u128) -> 
         match query {
             EventQuery::GetAllEvents => get_all_events(conn),
             EventQuery::GetFutureEvents => get_future_events(conn, unix_time),
+            EventQuery::GetEventById => get_event_by_id(conn, unix_time as i64)
         }
     })
     .await?
@@ -60,6 +62,11 @@ fn get_future_events(conn: Connection, unix_time: u128) -> Result<Vec<Event>, ru
     get_event_rows(stmt)
 }
 
+fn get_event_by_id(conn: Connection, event_id: i64) -> Result<Vec<Event>, rusqlite::Error> {
+    let stmt = conn.prepare(format!("SELECT * FROM events WHERE id={} LIMIT 1;", event_id).as_str())?;
+    get_event_rows(stmt)
+}
+
 fn get_event_rows(mut statement: Statement) -> Result<Vec<Event>, rusqlite::Error> {
     statement
         .query_map([], |row| {
@@ -73,6 +80,8 @@ fn get_event_rows(mut statement: Statement) -> Result<Vec<Event>, rusqlite::Erro
                 longitude: row.get(6)?,
                 details: row.get(7)?,
                 image: row.get(8)?,
+                ticket_price: row.get(9)?,
+                last_sale_date: row.get(10)?,
             })
         })
         .and_then(Iterator::collect)
@@ -142,4 +151,30 @@ fn get_ticket_rows(mut statement: Statement) -> Result<Vec<Ticket>, rusqlite::Er
             })
         })
         .and_then(Iterator::collect)
+}
+
+pub async fn create_ticket(pool: &Pool, event_id: i64, user_id: i64, creation_date: u128) -> Result<Ticket, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        get_ticket_sql(conn, event_id, user_id, creation_date)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+fn get_ticket_sql(conn: Connection, event_id: i64, user_id: i64, creation_date: u128) -> Result<Ticket, rusqlite::Error> {
+    let ticket_id: i64 = format!("{}{}{}", event_id.to_string(), format!("{:0>9}", user_id.to_string()), format!("{:0>5}", (creation_date % 1000).to_string())).parse::<i64>().unwrap();
+    let mut stmt = conn.prepare("INSERT INTO tickets (id, event_id, holder_id, single_entry, expended, creation_date) VALUES (?, ?, ?, ?, ?, ?)")?;
+    stmt.execute(params![
+        ticket_id,
+        event_id,
+        user_id,
+        1,
+        0,
+        creation_date as i64
+    ])?;
+    Ok(Ticket { id: ticket_id, event_id, holder_id: user_id, single_entry: 1, expended: 0, creation_date: creation_date as i64 })
 }
