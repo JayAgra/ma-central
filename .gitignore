@@ -1,5 +1,6 @@
 *.DS_Store
 *.pem
+*.key
 Server/.example.env
 
 #
@@ -39,6 +40,9 @@ Server/Cargo.lock
 
 ## User settings
 *xcuserdata*
+# not behaving
+iOS/ma-central.xcodeproj/project.xcworkspace/xcuserdata*
+iOS/ma-central.xcodeproj/project.xcworkspace/xcuserdata/*
 
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
 *.xcscmblueprint
