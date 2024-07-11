@@ -83,9 +83,6 @@ struct EventDetailView: View {
                         } else {
                             Button(action: {
                                 ticketPurchase = true
-                                purchaseTicket { result in
-                                    ticket = result
-                                }
                             }, label: {
                                 Label("Sign Up", systemImage: "plus")
                             })
@@ -144,6 +141,9 @@ struct EventDetailView: View {
                     VStack {
                         Button(action: {
                             ticketPurchaseActivity = true
+                            purchaseTicket { result in
+                                ticket = result
+                            }
                         }) {
                             Text("Purchase Ticket")
                         }
@@ -191,15 +191,13 @@ struct EventDetailView: View {
     }
     
     func purchaseTicket(completionBlock: @escaping (Ticket?) -> Void) {
-        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/tickets/create/\(event_id)") else { return }
+        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/tickets_create/\(event_id)") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
         
         let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            debugPrint(response)
-            debugPrint(request)
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     if let data = data {
@@ -214,7 +212,7 @@ struct EventDetailView: View {
                             ticketPurchaseStatus = .ErrorInternalServerError
                             completionBlock(nil)
                         }
-                    } else if let error = error {
+                    } else if error != nil {
                         ticketPurchaseStatus = .ErrorInternalServerError
                         completionBlock(nil)
                     }

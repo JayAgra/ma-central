@@ -388,7 +388,7 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(tickets_get_query)),
             )
             .service(
-                web::resource("/api/v1/tickets/create/{event_id}")
+                web::resource("/api/v1/tickets_create/{event_id}")
                     .route(web::get().to(tickets_create_ticket)),
             )
     })
