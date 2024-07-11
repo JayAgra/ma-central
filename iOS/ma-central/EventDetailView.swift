@@ -10,6 +10,7 @@ import Kingfisher
 import MapKit
 
 struct EventDetailView: View {
+    @EnvironmentObject var appState: AppState
     var image: String
     var date: String
     var title: String
@@ -68,12 +69,20 @@ struct EventDetailView: View {
  }
  */
                 Spacer()
-                Button(action: {
-                    
-                }, label: {
-                    Label("Sign Up", systemImage: "plus")
-                })
-                .padding()
+                if let user = appState.currentUser.first {
+                    if user.id == 0 {
+                        GuestAccessRestricted(message: "an account is required to register")
+                    } else {
+                        Button(action: {
+                            
+                        }, label: {
+                            Label("Sign Up", systemImage: "plus")
+                        })
+                        .padding()
+                    }
+                } else {
+                    LoadingDataView(message: "loading account data")
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Spacer()

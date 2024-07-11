@@ -33,16 +33,7 @@ struct HomeView: View {
                     }
                     .padding()
                 } else {
-                    VStack {
-                        HStack {
-                            Text("loading account data")
-                                .padding(.leading)
-                            Spacer()
-                            ProgressView()
-                                .padding(.trailing)
-                        }
-                    }
-                    .padding()
+                    LoadingDataView(message: "loading account data")
                 }
                 VStack(alignment: .leading) {
                     Text("Upcoming Events")
@@ -55,19 +46,27 @@ struct HomeView: View {
                     .background(Color.secondary.opacity(0.1))
                 }
                 .padding(.vertical)
-                /*
-                VStack(alignment: .leading) {
-                    Text("Your Events")
-                        .font(.title2)
-                        .padding(.leading)
-                    ScrollView(.horizontal) {
-                        HomeViewMeCarousel()
-                            .environmentObject(appState)
+                if let user = appState.currentUser.first {
+                    if user.id == 0 {
+                        GuestAccessRestricted(message: "an account is required to access this feature")
+                    } else {
+                        /*
+                         VStack(alignment: .leading) {
+                         Text("Your Events")
+                         .font(.title2)
+                         .padding(.leading)
+                         ScrollView(.horizontal) {
+                         HomeViewMeCarousel()
+                         .environmentObject(appState)
+                         }
+                         .background(Color.secondary.opacity(0.1))
+                         }
+                         .padding(.vertical)
+                         */
                     }
-                    .background(Color.secondary.opacity(0.1))
+                } else {
+                    LoadingDataView(message: "loading account data")
                 }
-                .padding(.vertical)
-                */
             }
             .navigationTitle("App Name")
             .navigationBarTitleDisplayMode(.inline)

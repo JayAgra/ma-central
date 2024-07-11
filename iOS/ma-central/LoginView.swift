@@ -45,6 +45,11 @@ struct LoginView: View {
                     Button("create") {
                         self.create = true
                     }
+                    Button("continue as guest") {
+                        appState.currentUser = [UserPoints(id: 0, username: "Guest", lifetime: 0, score: 0)]
+                        appState.sessionOk = true
+                    }
+                    .padding()
                 } else {
                     Text("create account")
                         .font(.title3)
