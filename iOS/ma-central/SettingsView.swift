@@ -29,6 +29,7 @@ struct SettingsView: View {
                                 for cookie in cookies {
                                     sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
                                 }
+                                appState.selectedTab = .home
                                 appState.sessionOk = false
                             }
                         }

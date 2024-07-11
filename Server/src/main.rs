@@ -83,23 +83,23 @@ async fn auth_get_logout(session: web::Data<RwLock<Sessions>>, identity: Identit
 }
 
 // get to confirm session status and obtain current user id
-async fn auth_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn auth_get_whoami(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
-        .json(db_auth::Id { id: user.id }))
+        .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetCurrentUserScore, user.id).await?))
 }
 
 async fn board_get_lifetime_top(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "max-age=60"))
-        .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?)
+        .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores, 0).await?)
     )
 }
 
-async fn board_get_lifetime_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn board_get_lifetime_all(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "max-age=60"))
-        .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?)
+        .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores, user.id).await?)
     )
 }
 

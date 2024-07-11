@@ -14,23 +14,36 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack {
-                    HStack {
-                        Text("Jayen")
-                            .font(.largeTitle)
-                            .padding(.leading)
-                        Spacer()
+                if let user = appState.currentUser.first {
+                    VStack {
+                        HStack {
+                            Text(user.username)
+                                .font(.largeTitle)
+                                .padding(.leading)
+                            Spacer()
+                        }
+                        HStack {
+                            Text(String(user.score))
+                                .font(.title2)
+                            Text("points")
+                            Spacer()
+                            Text("fancy points bar here")
+                        }
+                        .padding()
                     }
-                    HStack {
-                        Text("129")
-                            .font(.title2)
-                        Text("points")
-                        Spacer()
-                        Text("fancy points bar here")
+                    .padding()
+                } else {
+                    VStack {
+                        HStack {
+                            Text("loading account data")
+                                .padding(.leading)
+                            Spacer()
+                            ProgressView()
+                                .padding(.trailing)
+                        }
                     }
                     .padding()
                 }
-                .padding()
                 VStack(alignment: .leading) {
                     Text("Upcoming Events")
                         .font(.title2)
@@ -64,6 +77,10 @@ struct HomeView: View {
                 appState.refreshFutureEvents()
                 firstLoad = true
             }
+        }
+        .refreshable {
+            appState.refreshUserJson()
+            appState.refreshFutureEvents()
         }
     }
 }

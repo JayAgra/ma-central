@@ -28,6 +28,7 @@ class AppState: ObservableObject {
     @Published public var sessionOk: Bool = true
     @Published public var futureEvents: [Event] = []
     @Published public var eventsLoading: Bool = false
+    @Published public var currentUser: [UserPoints] = []
     private var cancellables: Set<AnyCancellable> = []
     
     init() {
@@ -38,6 +39,9 @@ class AppState: ObservableObject {
         
         checkLoginState { isLoggedIn in
             self.sessionOk = isLoggedIn
+            if self.sessionOk {
+                self.refreshUserJson()
+            }
         }
     }
     
@@ -75,6 +79,41 @@ class AppState: ObservableObject {
             self.futureEvents = output
         }
     }
+    
+    func loadCurrentUserJson(completionBlock: @escaping ([UserPoints]) -> Void) {
+        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/auth/whoami") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.httpShouldHandleCookies = true
+        eventsLoading = true
+        
+        let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            self.eventsLoading = false
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode([UserPoints].self, from: data)
+                    DispatchQueue.main.async {
+                        completionBlock(result)
+                    }
+                } catch {
+                    print("parse error")
+                    completionBlock([])
+                }
+            } else if let error = error {
+                print("fetch error: \(error)")
+                completionBlock([])
+            }
+        }
+        requestTask.resume()
+    }
+    
+    func refreshUserJson() {
+        self.loadCurrentUserJson { (output) in
+            self.currentUser = output
+        }
+    }
 }
 
 struct Event: Codable {
@@ -83,4 +122,10 @@ struct Event: Codable {
     let latitude, longitude: Double
     let details: String
     let image: String
+}
+
+struct UserPoints: Codable {
+    let id: Int
+    let username: String
+    let lifetime, score: Int
 }
