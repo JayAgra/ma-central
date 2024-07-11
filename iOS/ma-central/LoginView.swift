@@ -126,8 +126,8 @@ struct LoginView: View {
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-                            appState.sessionOk = true
                             appState.refreshUserJson()
+                            appState.sessionOk = true
                             loading = false
                         } else {
                             loading = false

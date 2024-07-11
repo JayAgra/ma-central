@@ -103,6 +103,10 @@ struct EventDetailView: View {
             if !ticketPurchaseActivity {
                 VStack {
                     VStack {
+                        Text("ticket purchase\n")
+                            .font(.title)
+                            .fontWeight(.black)
+                            .foregroundColor(.primary)
                         Text(date)
                             .font(.headline)
                             .foregroundColor(.secondary)
@@ -111,16 +115,11 @@ struct EventDetailView: View {
                             .fontWeight(.black)
                             .foregroundColor(.primary)
                             .lineLimit(3)
-                        Text("\(location.uppercased())\n")
+                        Text("\(location.uppercased())")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text("ticket purchase")
-                            .font(.title)
-                            .fontWeight(.black)
-                            .foregroundColor(.primary)
                     }
                     .padding()
-                    Spacer()
                     if Int(Date().timeIntervalSince1970 * 1_000) >= lastSaleDate {
                         Spacer()
                         VStack {
@@ -133,25 +132,22 @@ struct EventDetailView: View {
                     } else {
                         Spacer()
                         VStack {
-                            Text("Ticket price:\n\(ticketPrice) points")
+                            Text("Ticket price:")
+                                .font(.headline)
+                            Text("\(ticketPrice) point(s)")
                                 .font(.title)
                                 .fontWeight(.black)
                                 .foregroundColor(.primary)
                         }
                         Spacer()
                     }
-                    Spacer()
                     VStack {
                         Button(action: {
                             ticketPurchaseActivity = true
                         }) {
                             Text("Purchase Ticket")
-                                .font(.title)
-                                .fontWeight(.black)
-                                .foregroundColor(.primary)
                         }
                         .padding()
-                        .background(Color.blue)
                     }
                 }
             } else {

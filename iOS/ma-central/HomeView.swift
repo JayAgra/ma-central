@@ -72,11 +72,13 @@ struct HomeView: View {
         .onAppear() {
             if !firstLoad {
                 appState.refreshFutureEvents()
+                if appState.currentUser[0].id != 0 { appState.refreshUserJson() }
+                if appState.currentUser[0].id != 0 { appState.refreshUserTickets() }
                 firstLoad = true
             }
         }
         .refreshable {
-            appState.refreshUserJson()
+            if appState.currentUser[0].id != 0 { appState.refreshUserJson() }
             appState.refreshFutureEvents()
         }
     }

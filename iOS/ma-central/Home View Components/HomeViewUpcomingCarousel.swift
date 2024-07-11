@@ -20,9 +20,6 @@ struct HomeViewUpcomingCarousel: View {
                     CardView(image: event.image, date: String(event.start_time), title: event.title, location: event.human_location, dimensions: CGPoint(x: 275, y: 325))
                 })
             }
-            if appState.futureEvents.isEmpty {
-                Text("There are no upcoming events.")
-            }
         }
     }
 }

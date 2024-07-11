@@ -25,10 +25,9 @@ class AppState: ObservableObject {
 #else
     @Published public var selectedTab: Tab = .home
 #endif
-    @Published public var sessionOk: Bool = true
+    @Published public var sessionOk: Bool = false
     @Published public var futureEvents: [Event] = []
     @Published public var userTickets: [Ticket] = []
-    @Published public var eventsLoading: Bool = false
     @Published public var currentUser: [UserPoints] = []
     private var cancellables: Set<AnyCancellable> = []
     
@@ -52,10 +51,8 @@ class AppState: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
-        eventsLoading = true
         
         let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            self.eventsLoading = false
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
@@ -87,10 +84,8 @@ class AppState: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
-        eventsLoading = true
         
         let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            self.eventsLoading = false
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
@@ -122,10 +117,8 @@ class AppState: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
-        eventsLoading = true
         
         let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            self.eventsLoading = false
             if let data = data {
                 do {
                     let decoder = JSONDecoder()

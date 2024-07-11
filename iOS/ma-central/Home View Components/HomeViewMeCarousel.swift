@@ -15,9 +15,6 @@ struct HomeViewMeCarousel: View {
             ForEach(appState.userTickets, id: \.id) { ticket in
                 CardView(image: "", date: String(ticket.id), title: "Ticket", location: String(ticket.creation_date), dimensions: CGPoint(x: 275, y: 325))
             }
-            if appState.userTickets.isEmpty {
-                Text("You have no tickets.")
-            }
         }
         .onAppear() {
             appState.refreshUserTickets()
