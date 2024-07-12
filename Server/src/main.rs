@@ -16,7 +16,7 @@ use r2d2_sqlite::{self, SqliteConnectionManager};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock, time::{SystemTime, UNIX_EPOCH}, path::PathBuf};
-use tempfile::NamedTempFile;
+use tempfile::{NamedTempFile, tempdir};
 
 mod auth;
 mod db_main;
@@ -264,7 +264,7 @@ async fn tickets_generate_pass(req: HttpRequest, db: web::Data<Databases>, user:
     let ticket_results = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetTicketById, ticket_id.to_string()).await.expect("failed to get ticket");
     if ticket_results.len() == 1 {
         if ticket_results[0].holder_id == user.id {
-            let pass_dir = NamedTempFile::new().expect("tmp dir creation failure");
+            let pass_dir = tempdir().expect("tmp dir creation failure");
             let pass_dir_path = pass_dir.path().to_owned();
             let corresponding_event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, ticket_results[0].event_id as u128).await.expect("failed to get event");
             let pass_json = pass::generate_pass_json(ticket_results[0].clone(), corresponding_event[0].clone(), user);
