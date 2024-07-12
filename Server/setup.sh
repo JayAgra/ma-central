@@ -2,6 +2,7 @@ sudo apt-get update                                                     #
 sudo apt-get install gcc                                                #
 sudo apt-get install libssl-dev                                         # linux build requirements
 sudo apt-get install pkg-config                                         #
+sudo apt install zip                                                    #
 mkdir macsvc && cd macsvc                                               # ~/macsvc
 git clone "https://github.com/JayAgra/ma-central.git"                   # clone git repo
 cd ma-central                                                           # ~/macsvc/ma-central (git repo)
@@ -13,6 +14,7 @@ cp ma-central/Server/data.db data.db                                    # # #
 cp ma-central/Server/data_auth.db data_auth.db                          # copy necessary files from git repo
 cp ma-central/Server/.example.env .env                                  # # #
 cp ma-central/Server/update.sh update.sh                                # copy update script
+cp -r ma-central/Server/passes passes                                   #
 chmod +x update.sh                                                      # make it executatble
 cp ma-central/Server/service.sh service.sh                              # copy service management script
 chmod +x service.sh                                                     # make it executatble

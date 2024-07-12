@@ -327,10 +327,10 @@ fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
     signature_path
 }
 fn package_pass(pass_dir_path: &PathBuf) -> PathBuf {
-    let output_pkpass = NamedTempFile::new().expect("failed to create packaged pass");
+    let output_dir = tempdir().expect("could not create dir for pass");
 
     let status = std::process::Command::new("zip")
-        .args(&["-r", "-q", "-0", "-X", output_pkpass.path().to_str().unwrap(), "."])
+        .args(&["-r", "-q", "-0", "-X", output_dir.path().join("pass.pkpass").to_str().unwrap(), "."])
         .current_dir(&pass_dir_path)
         .status()
         .expect("failed to execute zip");
@@ -339,7 +339,7 @@ fn package_pass(pass_dir_path: &PathBuf) -> PathBuf {
         panic!("failed to package pass");
     }
 
-    output_pkpass.into_temp_path().to_path_buf()
+    output_dir.path().join("pass.pkpass")
 }
 // end pass creation extras
 
