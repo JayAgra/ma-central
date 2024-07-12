@@ -9,7 +9,6 @@ use actix_web::{
     middleware::{self, DefaultHeaders},
     web, App, Error as AWError, FromRequest, HttpRequest, HttpResponse, HttpServer, Responder,
 };
-use base64;
 use dotenv::dotenv;
 use openssl::{
     ssl::{SslAcceptor, SslFiletype, SslMethod},
@@ -314,8 +313,8 @@ async fn tickets_generate_pass(req: HttpRequest, db: web::Data<Databases>, user:
 fn calculate_hash(file_path: PathBuf) -> String {
     let content = fs::read(&file_path).expect("failed to read pass file");
     let digest = openssl::hash::hash(MessageDigest::sha1(), &content).expect("failed to has pass file");
-    let base64_digest = base64::encode(&digest);
-    base64_digest
+    let hex_digest = digest.iter().map(|b| format!("{:02x}", b)).collect::<Vec<_>>().join("");
+    hex_digest
 }
 fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
     let manifest_json_path = pass_dir_path.join("manifest.json");
@@ -333,7 +332,7 @@ fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
     let pkcs12_data = pkcs12.parse2("")
         .expect("failed to parse PKCS #12 data");
 
-    let pkcs7 = openssl::pkcs7::Pkcs7::sign(&pkcs12_data.cert.unwrap(), &pkcs12_data.pkey.unwrap(), &pkcs12_data.ca.unwrap(), &manifest_json_data, Pkcs7Flags::empty())
+    let pkcs7 = openssl::pkcs7::Pkcs7::sign(&pkcs12_data.cert.unwrap(), &pkcs12_data.pkey.unwrap(), &pkcs12_data.ca.unwrap_or(Stack::new().unwrap()), &manifest_json_data, Pkcs7Flags::empty())
         .expect("failed to sign manifest.json");
 
     let signature_path = pass_dir_path.join("signature");

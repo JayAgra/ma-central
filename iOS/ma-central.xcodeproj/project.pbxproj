@@ -24,6 +24,7 @@
 		F5436F932C10E3AF00ED6D83 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5436F922C10E3AF00ED6D83 /* URLSessionConfiguration.swift */; };
 		F583965D2C1A0FFC0079E3C9 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */; };
 		F5932B562C194EDB007D0C18 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5932B552C194EDB007D0C18 /* CardView.swift */; };
+		F5A53FC02C40E89C006E4119 /* AddToWalletButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A53FBF2C40E89C006E4119 /* AddToWalletButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		F5436F922C10E3AF00ED6D83 /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		F5932B552C194EDB007D0C18 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		F5A53FBF2C40E89C006E4119 /* AddToWalletButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToWalletButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 				F53785512C3F60130075EC49 /* LoadingDataView.swift */,
 				F53785532C3F60850075EC49 /* GuestAccessRestricted.swift */,
 				F5932B552C194EDB007D0C18 /* CardView.swift */,
+				F5A53FBF2C40E89C006E4119 /* AddToWalletButton.swift */,
 			);
 			path = "Miscellaneous View Components";
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 				F5436F872C10E17A00ED6D83 /* AppState.swift in Sources */,
 				F53785522C3F60130075EC49 /* LoadingDataView.swift in Sources */,
 				F5436F8D2C10E36000ED6D83 /* SettingsView.swift in Sources */,
+				F5A53FC02C40E89C006E4119 /* AddToWalletButton.swift in Sources */,
 				F50AD6AC2C06A55E00A15A2C /* HomeView.swift in Sources */,
 				F583965D2C1A0FFC0079E3C9 /* EventDetailView.swift in Sources */,
 				F50AD6AA2C06A55E00A15A2C /* ma_centralApp.swift in Sources */,
