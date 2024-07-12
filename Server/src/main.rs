@@ -11,7 +11,15 @@ use actix_web::{
 };
 use base64;
 use dotenv::dotenv;
-use openssl::{ssl::{SslAcceptor, SslFiletype, SslMethod}, hash::MessageDigest, pkey::PKey, sign::Signer};
+use openssl::{
+    ssl::{SslAcceptor, SslFiletype, SslMethod},
+    hash::MessageDigest,
+    pkey::{PKey, Private},
+    sign::Signer,
+    pkcs7::{Pkcs7, Pkcs7Flags},
+    stack::Stack,
+    x509::X509
+};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -314,22 +322,42 @@ fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
     let private_key = PKey::private_key_from_pem(&private_key_bytes)
         .expect("failed to parse private key");
 
-    let pass_json_path = pass_dir_path.join("pass.json");
-    let pass_json_data = fs::read(&pass_json_path)
-        .expect("Failed to read pass.json file");
-    let pass_json_hash = openssl::sha::sha1(&pass_json_data);
+    let manifest_json_path = pass_dir_path.join("manifest.json");
+    let manifest_json_data = fs::read(&manifest_json_path)
+        .expect("failed to read manifest.json file");
+    let manifest_json_hash = openssl::sha::sha1(&manifest_json_data);
 
     let mut signer = Signer::new(openssl::hash::MessageDigest::sha1(), &private_key)
         .expect("failed to create signer instance");
-
-    signer.update(&pass_json_hash)
+    signer.update(&manifest_json_hash)
         .expect("failed to update signer with certificate");
+    let signature = signer.sign_to_vec()
+        .expect("failed to sign manifest file");
 
-    let signature = signer.sign_to_vec().expect("failed to sign manifest file");
+    let signer_cert_bytes = fs::read("./passes/certs/signerCert.pem")
+        .expect("failed to read signer certificate");
+    let signer_cert = X509::from_pem(&signer_cert_bytes)
+        .expect("failed to parse signer certificate");
+
+    let wwdr_cert_bytes = fs::read("./passes/certs/wwdr_intermediate.crt")
+        .expect("failed to read WWDR certificate");
+    let wwdr_cert = X509::from_pem(&wwdr_cert_bytes)
+        .expect("failed to parse WWDR certificate");
+
+    let mut certs = Stack::new().unwrap();
+    certs.push(signer_cert.clone()).unwrap();
+    certs.push(wwdr_cert.clone()).unwrap();
+
+    let pkcs7 = openssl::pkcs7::Pkcs7::sign(&signer_cert, &private_key, &certs, &manifest_json_data, Pkcs7Flags::empty())
+        .expect("failed to sign manifest.json");
 
     let signature_path = pass_dir_path.join("signature");
-    fs::write(&signature_path, &signature).expect("failed to write signature");
     
+    let pkcs7_der = pkcs7.to_der()
+        .expect("failed to serialize PKCS #7 to DER");
+    fs::write(pass_dir_path.join("signature"), pkcs7_der)
+        .expect("failed to write PKCS #7 signature to file");
+
     signature_path
 }
 fn package_pass(pass_dir_path: &PathBuf, output_dir: PathBuf) -> PathBuf {
