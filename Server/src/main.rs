@@ -9,15 +9,19 @@ use actix_web::{
     middleware::{self, DefaultHeaders},
     web, App, Error as AWError, FromRequest, HttpRequest, HttpResponse, HttpServer, Responder,
 };
+use base64;
 use dotenv::dotenv;
-use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use openssl::{ssl::{SslAcceptor, SslFiletype, SslMethod}, hash::MessageDigest, pkey::PKey, sign::Signer};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, io, pin::Pin, sync::RwLock, time::{SystemTime, UNIX_EPOCH}};
+use serde_json::json;
+use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock, time::{SystemTime, UNIX_EPOCH}, path::PathBuf};
+use tempfile::NamedTempFile;
 
 mod auth;
 mod db_main;
 mod db_auth;
+mod pass;
 mod session;
 
 // hashmap containing user session IDs
@@ -229,18 +233,23 @@ async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user:
             .duration_since(UNIX_EPOCH)
             .expect("time just went fucking backwards");
         if event[0].last_sale_date > since_the_epoch.as_millis() as i64 {
-            let user_results = db_auth::execute_scores(&db.auth, db_auth::AuthData::GetCurrentUserScore, user.id).await?;
-            if user_results[0].score >= event[0].ticket_price {
-                let point_deduction = db_auth::update_points(&db.auth, user.id, event[0].ticket_price * -1).await?;
-                if point_deduction {
-                    Ok(HttpResponse::Ok()
-                        .insert_header(("Cache-Control", "no-cache"))
-                        .json(db_main::create_ticket(&db.main, event[0].id, user.id, since_the_epoch.as_millis()).await?))
+            let owned_tickets = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetUserEventTickets, format!("{}_{}", user.id, event[0].id)).await?;
+            if owned_tickets.len() == 0 {
+                let user_results = db_auth::execute_scores(&db.auth, db_auth::AuthData::GetCurrentUserScore, user.id).await?;
+                if user_results[0].score >= event[0].ticket_price {
+                    let point_deduction = db_auth::update_points(&db.auth, user.id, event[0].ticket_price * -1).await?;
+                    if point_deduction {
+                        Ok(HttpResponse::Ok()
+                            .insert_header(("Cache-Control", "no-cache"))
+                            .json(db_main::create_ticket(&db.main, event[0].id, user.id, since_the_epoch.as_millis()).await?))
+                    } else {
+                        Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
+                    }
                 } else {
-                    Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
+                    Err(error::ErrorForbidden("{\"status\": \"balance_too_low\"}"))
                 }
             } else {
-                Err(error::ErrorForbidden("{\"status\": \"balance_too_low\"}"))
+                Err(error::ErrorLocked("{\"status\": \"ticket_sale_ended\"}"))
             }
         } else {
             Err(error::ErrorLocked("{\"status\": \"ticket_sale_ended\"}"))
@@ -249,6 +258,90 @@ async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user:
         Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
     }
 }
+
+async fn tickets_generate_pass(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> impl Responder {
+    let ticket_id = req.match_info().get("ticket_id").unwrap();
+    let ticket_results = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetTicketById, ticket_id.to_string()).await.expect("failed to get ticket");
+    if ticket_results.len() == 1 {
+        if ticket_results[0].holder_id == user.id {
+            let pass_dir = NamedTempFile::new().expect("tmp dir creation failure");
+            let pass_dir_path = pass_dir.path().to_owned();
+            let corresponding_event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, ticket_results[0].event_id as u128).await.expect("failed to get event");
+            let pass_json = pass::generate_pass_json(ticket_results[0].clone(), corresponding_event[0].clone(), user);
+            // write pass data
+            fs::write(pass_dir_path.join("pass.json"), &pass_json.to_string()).expect("failed to write pass");
+            // copy images
+            let _ = fs::copy("./passes/background@2x.png", pass_dir_path.join("background@2x.png"));
+            let _ = fs::copy("./passes/icon@2x.png", pass_dir_path.join("icon@2x.png"));
+            let _ = fs::copy("./passes/logo@2x.png", pass_dir_path.join("logo@2x.png"));
+            // make manifest
+            let manifest_json = json!({
+                "pass.json": calculate_hash(pass_dir_path.join("pass.json")),
+                "background@2x.png": calculate_hash(pass_dir_path.join("background@2x.png")),
+                "icon@2x.png": calculate_hash(pass_dir_path.join("icon@2x.png")),
+                "logo@2x.png": calculate_hash(pass_dir_path.join("logo@2x.png")),
+            });
+            fs::write(pass_dir_path.join("manifest.json"), manifest_json.to_string()).expect("failed to write manifest");
+            let _ = sign_pass(&pass_dir_path);
+            let pkpass_path = package_pass(&pass_dir_path);
+            let pkpass_bytes = fs::read(pkpass_path).expect("Failed to read .pkpass file");
+            HttpResponse::Ok()
+                .content_type("application/vnd.apple.pkpass")
+                .body(pkpass_bytes)
+        } else {
+            HttpResponse::Unauthorized()
+                .content_type(ContentType::json())
+                .body("{\"status\": \"unauthorized\"}")
+        }
+    } else {
+        HttpResponse::BadRequest()
+            .content_type(ContentType::json())
+            .body("{\"status\": \"invalid_id\"}")
+    }
+}
+
+// part of pass creation
+fn calculate_hash(file_path: PathBuf) -> String {
+    let content = fs::read(&file_path).expect("failed to read pass file");
+    let digest = openssl::hash::hash(MessageDigest::sha1(), &content).expect("failed to has pass file");
+    let base64_digest = base64::encode(&digest);
+    base64_digest
+}
+
+fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
+    let private_key_bytes = fs::read("./passes/certs/signerKey.key").expect("failed to read pass private key");
+    let certificate_bytes = fs::read("./passes/certs/signerCert.pem").expect("failed to read pass certificate");
+
+    let private_key = PKey::private_key_from_pem(&private_key_bytes)
+        .expect("failed to parse private key");
+    let mut signer = Signer::new(MessageDigest::sha1(), &private_key)
+        .expect("failed to create signer instance");
+
+    signer.update(&certificate_bytes).expect("failed to update signer with certificate");
+
+    let signature = signer.sign_to_vec().expect("failed to sign manifest file");
+
+    let signature_path = pass_dir_path.join("signature");
+    fs::write(&signature_path, &signature).expect("failed to write signature");
+    
+    signature_path
+}
+fn package_pass(pass_dir_path: &PathBuf) -> PathBuf {
+    let output_pkpass = NamedTempFile::new().expect("failed to create packaged pass");
+
+    let status = std::process::Command::new("zip")
+        .args(&["-r", "-q", "-0", "-X", output_pkpass.path().to_str().unwrap(), "."])
+        .current_dir(&pass_dir_path)
+        .status()
+        .expect("failed to execute zip");
+
+    if !status.success() {
+        panic!("failed to package pass");
+    }
+
+    output_pkpass.into_temp_path().to_path_buf()
+}
+// end pass creation extras
 
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
@@ -390,6 +483,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/tickets_create/{event_id}")
                     .route(web::get().to(tickets_create_ticket)),
+            )
+            .service(
+                web::resource("/api/v1/ticketing/pkpass/{ticket_id}")
+                    .route(web::get().to(tickets_generate_pass)),
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?

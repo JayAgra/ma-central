@@ -2,7 +2,7 @@ use actix_web::{error, web, Error};
 use rusqlite::{params, Statement};
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct Event {
     pub id: i64,
     pub start_time: i64,
@@ -17,7 +17,7 @@ pub struct Event {
     pub last_sale_date: i64,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct Ticket {
     pub id: i64,
     pub event_id: i64,
@@ -93,6 +93,8 @@ pub enum TicketQuery {
     GetUserTickets,
     GetValidEventTickets,
     GetValidUserTickets,
+    GetTicketById,
+    GetUserEventTickets
 }
 
 pub async fn execute_tickets(pool: &Pool, query: TicketQuery, parameter: String) -> Result<Vec<Ticket>, Error> {
@@ -107,6 +109,8 @@ pub async fn execute_tickets(pool: &Pool, query: TicketQuery, parameter: String)
             TicketQuery::GetUserTickets => get_user_tickets(conn, parameter),
             TicketQuery::GetValidEventTickets => get_valid_event_tickets(conn, parameter),
             TicketQuery::GetValidUserTickets => get_valid_user_tickets(conn, parameter),
+            TicketQuery::GetTicketById => get_ticket_id(conn, parameter),
+            TicketQuery::GetUserEventTickets => get_user_event_tickets(conn, parameter),
         }
     })
     .await?
@@ -135,6 +139,17 @@ fn get_valid_event_tickets(conn: Connection, event_id: String) -> Result<Vec<Tic
 
 fn get_valid_user_tickets(conn: Connection, holder_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
     let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND expended=0 ORDER BY creation_date ASC;", holder_id.parse::<i64>().unwrap_or(0)).as_str())?;
+    get_ticket_rows(stmt)
+}
+
+fn get_ticket_id(conn: Connection, ticket_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE id={} AND expended=0;", ticket_id).as_str())?;
+    get_ticket_rows(stmt)
+}
+
+fn get_user_event_tickets(conn: Connection, user_event: String) -> Result<Vec<Ticket>, rusqlite::Error> {
+    let user_event_data: Vec<&str> = user_event.split("_").collect();
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND event_id={};", user_event_data[0], user_event_data[1]).as_str())?;
     get_ticket_rows(stmt)
 }
 
