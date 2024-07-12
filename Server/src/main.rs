@@ -308,17 +308,22 @@ fn calculate_hash(file_path: PathBuf) -> String {
     let base64_digest = base64::encode(&digest);
     base64_digest
 }
-
 fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
     let private_key_bytes = fs::read("./passes/certs/signerKey.key").expect("failed to read pass private key");
-    let certificate_bytes = fs::read("./passes/certs/signerCert.pem").expect("failed to read pass certificate");
 
     let private_key = PKey::private_key_from_pem(&private_key_bytes)
         .expect("failed to parse private key");
-    let mut signer = Signer::new(MessageDigest::sha1(), &private_key)
+
+    let pass_json_path = pass_dir_path.join("pass.json");
+    let pass_json_data = fs::read(&pass_json_path)
+        .expect("Failed to read pass.json file");
+    let pass_json_hash = openssl::sha::sha1(&pass_json_data);
+
+    let mut signer = Signer::new(openssl::hash::MessageDigest::sha1(), &private_key)
         .expect("failed to create signer instance");
 
-    signer.update(&certificate_bytes).expect("failed to update signer with certificate");
+    signer.update(&pass_json_hash)
+        .expect("failed to update signer with certificate");
 
     let signature = signer.sign_to_vec().expect("failed to sign manifest file");
 
