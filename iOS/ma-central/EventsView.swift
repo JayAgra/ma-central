@@ -11,7 +11,7 @@ struct EventsView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             GeometryReader { geometry in
                 ScrollView(.vertical) {
                     VStack {
@@ -28,6 +28,9 @@ struct EventsView: View {
                 .frame(width: geometry.size.width, height: geometry.size.height)
                 .navigationTitle("Events")
             }
+        }
+        .onAppear {
+            appState.refreshFutureEvents()
         }
         .refreshable {
             appState.refreshFutureEvents()

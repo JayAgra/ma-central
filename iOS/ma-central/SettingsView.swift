@@ -13,7 +13,7 @@ struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 Form {
                     Section {

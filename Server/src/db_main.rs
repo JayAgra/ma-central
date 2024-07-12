@@ -123,22 +123,22 @@ fn get_all_tickets(conn: Connection) -> Result<Vec<Ticket>, rusqlite::Error> {
 }
 
 fn get_event_tickets(conn: Connection, event_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE event_id={} ORDER BY creation_date ASC;", event_id.parse::<i64>().unwrap_or(0)).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE event_id={} ORDER BY creation_date DESC;", event_id.parse::<i64>().unwrap_or(0)).as_str())?;
     get_ticket_rows(stmt)
 }
 
 fn get_user_tickets(conn: Connection, holder_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} ORDER BY creation_date ASC;", holder_id.parse::<i64>().unwrap_or(0)).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} ORDER BY creation_date DESC;", holder_id.parse::<i64>().unwrap_or(0)).as_str())?;
     get_ticket_rows(stmt)
 }
 
 fn get_valid_event_tickets(conn: Connection, event_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE event_id={} AND expended=0 ORDER BY creation_date ASC;", event_id.parse::<i64>().unwrap_or(0)).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE event_id={} AND expended=0 ORDER BY creation_date DESC;", event_id.parse::<i64>().unwrap_or(0)).as_str())?;
     get_ticket_rows(stmt)
 }
 
 fn get_valid_user_tickets(conn: Connection, holder_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND expended=0 ORDER BY creation_date ASC;", holder_id.parse::<i64>().unwrap_or(0)).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND expended=0 ORDER BY creation_date DESC;", holder_id.parse::<i64>().unwrap_or(0)).as_str())?;
     get_ticket_rows(stmt)
 }
 

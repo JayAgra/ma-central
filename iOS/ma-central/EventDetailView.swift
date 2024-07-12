@@ -163,7 +163,7 @@ struct EventDetailView: View {
                         Spacer()
                         Text("Ticket obtained.")
                             .font(.title)
-                        Text("\n\nTicket Id:\n\(ticket?.id ?? 0)")
+                        Text("\n\nTicket Id:\n\(String(ticket?.id ?? 0))")
                             .font(.caption)
                         Spacer()
                     }
@@ -206,6 +206,8 @@ struct EventDetailView: View {
                             let result = try decoder.decode(Ticket.self, from: data)
                             DispatchQueue.main.async {
                                 ticketPurchaseStatus = .Success
+                                appState.refreshUserJson()
+                                appState.refreshUserTickets()
                                 completionBlock(result)
                             }
                         } catch {
