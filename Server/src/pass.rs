@@ -18,7 +18,7 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
         {
             "formatVersion": 1,
             "passTypeIdentifier": "pass.com.jayagra.ma-central",
-            "serialNumber": ticket.id,
+            "serialNumber": format!("{}", ticket.id),
             "teamIdentifier": "D6MFYYVHA8",
             "relevantDate": iso8601(&millis_to_system_time(event.start_time)),
             "locations": [
@@ -28,7 +28,7 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
                 }
             ],
             "barcode": {
-                "message": ticket.id,
+                "message": format!("{}", ticket.id),
                 "format": "PKBarcodeFormatPDF417",
                 "messageEncoding": "iso-8859-1"
             },
@@ -41,7 +41,7 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
                     {
                         "key": "event",
                         "label": "EVENT",
-                        "value": event.title
+                        "value": format!("{}", event.title)
                     }
                 ],
                 "secondaryFields" : [
@@ -56,7 +56,7 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
                     {
                         "key": "loc",
                         "label": "LOCATION",
-                        "value": event.human_location
+                        "value": format!("{}", event.human_location)
                     }
                 ],
                 "auxiliaryFields": [
@@ -70,7 +70,7 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
                     {
                         "key": "description",
                         "label": "Event Description",
-                        "value": event.details
+                        "value": format!("{}", event.details)
                     },
                     {
                         "key": "terms",
@@ -80,7 +80,7 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
                     {
                         "key": "creation_date",
                         "label": "Creation Timestamp",
-                        "value": ticket.creation_date
+                        "value": format!("{}", ticket.creation_date)
                     }
                 ]
             }
