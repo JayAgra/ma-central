@@ -21,6 +21,7 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
             "serialNumber": format!("{}", ticket.id),
             "teamIdentifier": "D6MFYYVHA8",
             "relevantDate": iso8601(&millis_to_system_time(event.start_time)),
+            "expirationDate": iso8601(&millis_to_system_time(event.end_time + 86400000)),
             "locations": [
                 {
                     "longitude": event.longitude,
