@@ -17,6 +17,7 @@ use openssl::{
     pkey::{PKey, Private},
     sign::Signer,
     pkcs7::{Pkcs7, Pkcs7Flags},
+    pkcs12::Pkcs12,
     stack::Stack,
     x509::X509
 };
@@ -317,38 +318,22 @@ fn calculate_hash(file_path: PathBuf) -> String {
     base64_digest
 }
 fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
-    let private_key_bytes = fs::read("./passes/certs/signerKey.key").expect("failed to read pass private key");
-
-    let private_key = PKey::private_key_from_pem(&private_key_bytes)
-        .expect("failed to parse private key");
-
     let manifest_json_path = pass_dir_path.join("manifest.json");
     let manifest_json_data = fs::read(&manifest_json_path)
         .expect("failed to read manifest.json file");
-    let manifest_json_hash = openssl::sha::sha1(&manifest_json_data);
 
-    let mut signer = Signer::new(openssl::hash::MessageDigest::sha1(), &private_key)
-        .expect("failed to create signer instance");
-    signer.update(&manifest_json_hash)
-        .expect("failed to update signer with certificate");
-    let signature = signer.sign_to_vec()
-        .expect("failed to sign manifest file");
+    let pkcs12_file = fs::read("./passes/certs/Certificates.p12")
+        .expect("failed to read PKCS #12 file");
+    let pkcs12 = Pkcs12::from_der(&pkcs12_file)
+        .map_err(|e| {
+            println!("Error: Failed to parse PKCS #12 file.")
+        })
+        .expect("failed to parse PKCS #12 file");
 
-    let signer_cert_bytes = fs::read("./passes/certs/signerCert.pem")
-        .expect("failed to read signer certificate");
-    let signer_cert = X509::from_pem(&signer_cert_bytes)
-        .expect("failed to parse signer certificate");
+    let pkcs12_data = pkcs12.parse2("")
+        .expect("failed to parse PKCS #12 data");
 
-    let wwdr_cert_bytes = fs::read("./passes/certs/wwdr_intermediate.crt")
-        .expect("failed to read WWDR certificate");
-    let wwdr_cert = X509::from_pem(&wwdr_cert_bytes)
-        .expect("failed to parse WWDR certificate");
-
-    let mut certs = Stack::new().unwrap();
-    certs.push(signer_cert.clone()).unwrap();
-    certs.push(wwdr_cert.clone()).unwrap();
-
-    let pkcs7 = openssl::pkcs7::Pkcs7::sign(&signer_cert, &private_key, &certs, &manifest_json_data, Pkcs7Flags::empty())
+    let pkcs7 = openssl::pkcs7::Pkcs7::sign(&pkcs12_data.cert.unwrap(), &pkcs12_data.pkey.unwrap(), &pkcs12_data.ca.unwrap(), &manifest_json_data, Pkcs7Flags::empty())
         .expect("failed to sign manifest.json");
 
     let signature_path = pass_dir_path.join("signature");

@@ -1,6 +1,7 @@
 *.DS_Store
 *.pem
 *.key
+*.p12
 Server/.example.env
 
 #
