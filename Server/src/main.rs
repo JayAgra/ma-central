@@ -283,7 +283,8 @@ async fn tickets_generate_pass(req: HttpRequest, db: web::Data<Databases>, user:
             });
             fs::write(pass_dir_path.join("manifest.json"), manifest_json.to_string()).expect("failed to write manifest");
             let _ = sign_pass(&pass_dir_path);
-            let pkpass_path = package_pass(&pass_dir_path);
+            let output_dir = tempdir().expect("could not create dir for pass");
+            let pkpass_path = package_pass(&pass_dir_path, output_dir.path().to_path_buf());
             let pkpass_bytes = fs::read(pkpass_path).expect("Failed to read .pkpass file");
             HttpResponse::Ok()
                 .content_type("application/vnd.apple.pkpass")
@@ -326,11 +327,9 @@ fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
     
     signature_path
 }
-fn package_pass(pass_dir_path: &PathBuf) -> PathBuf {
-    let output_dir = tempdir().expect("could not create dir for pass");
-
+fn package_pass(pass_dir_path: &PathBuf, output_dir: PathBuf) -> PathBuf {
     let status = std::process::Command::new("zip")
-        .args(&["-r", "-q", "-0", "-X", output_dir.path().join("pass.pkpass").to_str().unwrap(), "."])
+        .args(&["-r", "-q", "-0", "-X", output_dir.join("pass.pkpass").to_str().unwrap(), "."])
         .current_dir(&pass_dir_path)
         .status()
         .expect("failed to execute zip");
@@ -339,7 +338,7 @@ fn package_pass(pass_dir_path: &PathBuf) -> PathBuf {
         panic!("failed to package pass");
     }
 
-    output_dir.path().join("pass.pkpass")
+    output_dir.join("pass.pkpass")
 }
 // end pass creation extras
 
