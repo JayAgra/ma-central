@@ -13,18 +13,15 @@ use dotenv::dotenv;
 use openssl::{
     ssl::{SslAcceptor, SslFiletype, SslMethod},
     hash::MessageDigest,
-    pkey::{PKey, Private},
-    sign::Signer,
-    pkcs7::{Pkcs7, Pkcs7Flags},
+    pkcs7::Pkcs7Flags,
     pkcs12::Pkcs12,
     stack::Stack,
-    x509::X509
 };
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock, time::{SystemTime, UNIX_EPOCH}, path::PathBuf};
-use tempfile::{NamedTempFile, tempdir};
+use tempfile::tempdir;
 
 mod auth;
 mod db_main;
@@ -324,9 +321,6 @@ fn sign_pass(pass_dir_path: &PathBuf) -> PathBuf {
     let pkcs12_file = fs::read("./passes/certs/Certificates.p12")
         .expect("failed to read PKCS #12 file");
     let pkcs12 = Pkcs12::from_der(&pkcs12_file)
-        .map_err(|e| {
-            println!("Error: Failed to parse PKCS #12 file.")
-        })
         .expect("failed to parse PKCS #12 file");
 
     let pkcs12_data = pkcs12.parse2("")
