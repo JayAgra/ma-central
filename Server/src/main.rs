@@ -73,7 +73,11 @@ async fn auth_post_create(db: web::Data<Databases>, data: web::Json<auth::Create
 
 // login endpoint
 async fn auth_post_login(db: web::Data<Databases>, session: web::Data<RwLock<Sessions>>, identity: Identity, data: web::Json<auth::LoginForm>) -> impl Responder {
-    auth::login(&db.auth, session, identity, data).await
+    auth::login(&db.auth, session, identity, data, false).await
+}
+
+async fn auth_post_login_admin(db: web::Data<Databases>, session: web::Data<RwLock<Sessions>>, identity: Identity, data: web::Json<auth::LoginForm>) -> impl Responder {
+    auth::login(&db.auth, session, identity, data, true).await
 }
 
 // delete account endpoint
@@ -91,6 +95,18 @@ async fn auth_get_whoami(db: web::Data<Databases>, user: db_auth::User) -> Resul
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetCurrentUserScore, user.id).await?))
+}
+
+async fn auth_get_admin(user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.data == "admin" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body("true"))
+    } else {
+        Ok(HttpResponse::Forbidden()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body("false"))
+    }
 }
 
 async fn board_get_lifetime_top(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
@@ -353,7 +369,7 @@ fn package_pass(pass_dir_path: &PathBuf, output_dir: PathBuf) -> PathBuf {
 }
 // end pass creation extras
 
-const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\"]}}";
+const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\", \"D6MFYYVHA8.com.jayagra.ma-central-admin\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
 }
@@ -463,8 +479,16 @@ async fn main() -> io::Result<()> {
                     .route(web::post().to(auth_post_login)),
             )
             .service(
+                web::resource("/api/v1/auth/login/admin")
+                    .route(web::post().to(auth_post_login_admin)),
+            )
+            .service(
                 web::resource("/api/v1/auth/delete")
                     .route(web::post().to(auth_post_delete)),
+            )
+            .service(
+                web::resource("/api/v1/auth/admin")
+                    .route(web::post().to(auth_get_admin)),
             )
             .service(
                 web::resource("/api/v1/board/lifetime/top")

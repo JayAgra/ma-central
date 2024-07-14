@@ -1,39 +1,32 @@
 //
-//  ma_centralApp.swift
-//  ma-central
+//  ma_central_adminApp.swift
+//  ma-central-admin
 //
-//  Created by Jayen Agrawal on 5/28/24.
+//  Created by Jayen Agrawal on 7/14/24.
 //
 
 import SwiftUI
 
 @main
-struct ma_centralApp: App {
-    let settingsManager = SettingsManager.shared
+struct ma_central_adminApp: App {
     @StateObject public var appState = AppState()
     
     var body: some Scene {
         WindowGroup {
             if appState.sessionOk {
                 TabView(selection: $appState.selectedTab) {
-                    HomeView()
-                        .environmentObject(appState)
-                        .tabItem {
-                            Label("home", systemImage: "house")
-                        }
-                        .tag(Tab.home)
                     EventsView()
                         .environmentObject(appState)
                         .tabItem {
                             Label("events", systemImage: "calendar")
                         }
                         .tag(Tab.events)
-                    SettingsView()
+                    ScanView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("settings", systemImage: "gear")
+                            Label("scan", systemImage: "barcode.viewfinder")
                         }
-                        .tag(Tab.settings)
+                        .tag(Tab.scan)
                 }
                 .preferredColorScheme(.dark)
                 .environmentObject(appState)

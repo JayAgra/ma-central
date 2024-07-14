@@ -20,11 +20,7 @@ struct UserData {
 }
 
 class AppState: ObservableObject {
-#if targetEnvironment(macCatalyst)
-    @Published public var selectedTab: Tab? = .home
-#else
     @Published public var selectedTab: Tab = .home
-#endif
     @Published public var sessionOk: Bool = false
     @Published public var futureEvents: [Event] = []
     @Published public var userTickets: [Ticket] = []

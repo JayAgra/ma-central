@@ -81,6 +81,7 @@ pub async fn login(
     session: web::Data<RwLock<crate::Sessions>>,
     identity: Identity,
     login_form: web::Json<LoginForm>,
+    admin_restriction: bool
 ) -> impl Responder {
     // try to get target user from database
     let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
@@ -111,20 +112,26 @@ pub async fn login(
             .verify_password(login_form.password.as_bytes(), &parsed_hash.unwrap())
             .is_ok()
         {
-            // save the username to the identity
-            identity.remember(login_form.username.clone());
-            // write the user object to the session
-            session
-                .write()
-                .unwrap()
-                .user_map
-                .insert(target_user.clone().username.to_string(), target_user.clone());
-            // send generic success response
-            return HttpResponse::Ok()
-                .status(StatusCode::from_u16(200).unwrap())
-                .insert_header(("Cache-Control", "no-cache"))
-                .body("{\"status\": \"success\"}");
-        // bad password, send failure
+            if admin_restriction && target_user.data != "admin" {
+                return HttpResponse::Forbidden()
+                    .status(StatusCode::from_u16(400).unwrap())
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .body("{\"status\": \"bad_s5\"}");
+            } else {
+                // save the username to the identity
+                identity.remember(login_form.username.clone());
+                // write the user object to the session
+                session
+                    .write()
+                    .unwrap()
+                    .user_map
+                    .insert(target_user.clone().username.to_string(), target_user.clone());
+                // send generic success response
+                return HttpResponse::Ok()
+                    .status(StatusCode::from_u16(200).unwrap())
+                    .insert_header(("Cache-Control", "no-cache"))
+                    .body("{\"status\": \"success\"}");
+            }
         } else {
             // bad password, send 400
             return HttpResponse::BadRequest()
@@ -132,7 +139,6 @@ pub async fn login(
                 .insert_header(("Cache-Control", "no-cache"))
                 .body("{\"status\": \"bad_s3\"}");
         }
-    // target user is zero, send failure
     } else {
         // target user id is zero, send 400
         return HttpResponse::BadRequest()
