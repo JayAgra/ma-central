@@ -377,28 +377,28 @@ async fn admin_consume_ticket(req: HttpRequest, db: web::Data<Databases>, user: 
         if ticket_results.len() == 1 {
             if ticket_results[0].event_id.to_string().as_str() == event_id {
                 if ticket_results[0].expended == 0 {
-                    db_main::expend_ticket(&db.main, ticket_id.to_string()).await?;
+                    let _ = db_main::expend_ticket(&db.main, ticket_id.to_string()).await;
                     Ok(HttpResponse::Ok()
-                        .content_type(ContentType::json())
+                        .content_type(ContentType::plaintext())
                         .body("true"))
                 } else {
                     Ok(HttpResponse::Forbidden()
-                        .content_type(ContentType::json())
+                        .content_type(ContentType::plaintext())
                         .body("false"))
                 }
             } else {
                 Ok(HttpResponse::Forbidden()
-                    .content_type(ContentType::json())
+                    .content_type(ContentType::plaintext())
                     .body("false"))
             }
         } else {
             Ok(HttpResponse::Forbidden()
-            .content_type(ContentType::json())
+            .content_type(ContentType::plaintext())
             .body("false"))
         }
     } else {
         Ok(HttpResponse::Forbidden()
-            .content_type(ContentType::json())
+            .content_type(ContentType::plaintext())
             .body("false"))
     }
 }

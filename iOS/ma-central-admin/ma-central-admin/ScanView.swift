@@ -10,6 +10,7 @@ import SwiftUI
 struct ScanView: View {
     @EnvironmentObject var appState: AppState
     @State private var scannedValue: String?
+    @State private var resetScan: Bool = true
     @State private var eventId: Int?
     @State private var ticketOk: Bool?
     
@@ -20,58 +21,71 @@ struct ScanView: View {
             }
         } else {
             ZStack {
-                ScannerView(scannedValue: $scannedValue)
+                ScannerView(scannedValue: $scannedValue, resetScan: $resetScan)
                     .edgesIgnoringSafeArea(.all)
                 
                 if scannedValue != nil {
                     if ticketOk == nil {
                         VStack {
                             Spacer()
+                            Spacer()
                             Text("Validating ticket...")
                             ProgressView()
                             Spacer()
-                            Spacer()
                             Button("Cancel") {
-                                scannedValue = nil
+                                resetScan = true
+                                ticketOk = nil
                             }
                             Spacer()
                         }
                         .edgesIgnoringSafeArea(.all)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.black)
+                        .onAppear() {
+                            runTicket(ticket: scannedValue ?? "")
+                        }
                     } else if ticketOk == true {
                         VStack {
                             Spacer()
+                            Spacer()
                             Text("Ticket is valid")
                             Spacer()
-                            Spacer()
                             Button("Continue") {
-                                scannedValue = nil
+                                resetScan = true
+                                ticketOk = nil
                             }
+                            .foregroundColor(Color.white)
                             Spacer()
                         }
                         .edgesIgnoringSafeArea(.all)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.green)
                         .onAppear() {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                scannedValue = nil
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                resetScan = true
+                                ticketOk = nil
                             }
                         }
                     } else {
                         VStack {
                             Spacer()
+                            Spacer()
                             Text("Ticket invalid")
                             Spacer()
-                            Spacer()
                             Button("Continue") {
-                                scannedValue = nil
+                                resetScan = true
+                                ticketOk = nil
                             }
+                            .foregroundColor(Color.white)
                             Spacer()
                         }
                         .edgesIgnoringSafeArea(.all)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.red)
+                        .onAppear() {
+                            UINotificationFeedbackGenerator().notificationOccurred(.error)
+                        }
                     }
                 }
             }
@@ -101,7 +115,7 @@ struct ScanView: View {
     
     func runTicket(ticket: String) {
         consumeTicket(ticket: ticket) { (success) in
-            ticketOk = true
+            ticketOk = success
         }
     }
 }

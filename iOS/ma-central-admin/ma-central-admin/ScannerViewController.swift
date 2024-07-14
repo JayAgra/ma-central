@@ -75,17 +75,28 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     }
 
     func failed() { }
+    
+    func resetScan() {
+        captureSession.startRunning()
+        scannedValue = nil
+    }
 }
 
 struct ScannerView: UIViewControllerRepresentable {
     @Binding var scannedValue: String?
+    @Binding var resetScan: Bool
     
     func makeUIViewController(context: Context) -> ScannerViewController {
         let scannerViewController = ScannerViewController(scannedValue: $scannedValue)
         return scannerViewController
     }
 
-    func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) { }
+    func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {
+        if resetScan {
+            uiViewController.resetScan()
+            resetScan = false
+        }
+    }
     
     func makeCoordinator() -> Coordinator {
         return Coordinator(scannedValue: $scannedValue)
