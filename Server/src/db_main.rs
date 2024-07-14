@@ -149,7 +149,7 @@ fn get_ticket_id(conn: Connection, ticket_id: String) -> Result<Vec<Ticket>, rus
 
 fn get_user_event_tickets(conn: Connection, user_event: String) -> Result<Vec<Ticket>, rusqlite::Error> {
     let user_event_data: Vec<&str> = user_event.split("_").collect();
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND event_id={};", user_event_data[0], user_event_data[1]).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND event_id={} AND expended=0;", user_event_data[0], user_event_data[1]).as_str())?;
     get_ticket_rows(stmt)
 }
 
