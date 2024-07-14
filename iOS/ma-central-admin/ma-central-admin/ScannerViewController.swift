@@ -12,11 +12,21 @@ import AVFoundation
 class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
+    
+    @Binding var scannedValue: String?
+    
+    init(scannedValue: Binding<String?>) {
+        _scannedValue = scannedValue
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Setup AVCaptureSession
         captureSession = AVCaptureSession()
 
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
@@ -59,27 +69,41 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         if let metadataObject = metadataObjects.first {
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
-            // Handle barcode detection here
-
-            // Stop scanning
+            scannedValue = stringValue
             captureSession.stopRunning()
-
-            // Show overlay
-            // Implement your overlay view
         }
     }
 
-    func failed() {
-        // Handle failure
-    }
+    func failed() { }
 }
 
 struct ScannerView: UIViewControllerRepresentable {
+    @Binding var scannedValue: String?
+    
     func makeUIViewController(context: Context) -> ScannerViewController {
-        return ScannerViewController()
+        let scannerViewController = ScannerViewController(scannedValue: $scannedValue)
+        return scannerViewController
     }
 
-    func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {
-        // Update logic if needed
+    func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) { }
+    
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(scannedValue: $scannedValue)
+    }
+    
+    class Coordinator: NSObject, AVCaptureMetadataOutputObjectsDelegate {
+        @Binding var scannedValue: String?
+
+        init(scannedValue: Binding<String?>) {
+            _scannedValue = scannedValue
+        }
+
+        func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+            if let metadataObject = metadataObjects.first,
+               let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
+               let stringValue = readableObject.stringValue {
+                scannedValue = stringValue
+            }
+        }
     }
 }

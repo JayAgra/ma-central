@@ -88,6 +88,7 @@ struct LoginView: View {
                     alertMessage = "network error"
                 }
             }
+            .resume()
         } catch {
             loading = false
             showAlert = true

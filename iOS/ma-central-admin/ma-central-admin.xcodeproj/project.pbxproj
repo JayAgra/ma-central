@@ -30,6 +30,7 @@
 		F5359EB32C447F1B00B87CBB /* EventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
 		F5359EB92C447F3C00B87CBB /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		F5605CD52C4487440072BB04 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
+		F5605CD72C448A010072BB04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +71,7 @@
 		F5359EA42C447A2F00B87CBB /* ma-central-admin */ = {
 			isa = PBXGroup;
 			children = (
+				F5605CD72C448A010072BB04 /* Info.plist */,
 				F5359EA92C447AA700B87CBB /* ma-central-admin.entitlements */,
 				F5359EA32C447A2F00B87CBB /* ma_central_adminApp.swift */,
 				F5359EAB2C447BEA00B87CBB /* AppState.swift */,
@@ -300,8 +302,10 @@
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ma-central-admin/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Admin;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Access to the camera is required to scan barcodes.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -337,8 +341,10 @@
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ma-central-admin/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Admin;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Access to the camera is required to scan barcodes.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

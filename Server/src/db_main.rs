@@ -193,3 +193,21 @@ fn get_ticket_sql(conn: Connection, event_id: i64, user_id: i64, creation_date: 
     ])?;
     Ok(Ticket { id: ticket_id, event_id, holder_id: user_id, single_entry: 1, expended: 0, creation_date: creation_date as i64 })
 }
+
+pub async fn expend_ticket(pool: &Pool, ticket_id: String) -> Result<bool, Error> {
+    let pool = pool.clone();
+    
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        expend_ticket_sql(conn, ticket_id)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+fn expend_ticket_sql(conn: Connection, ticket_id: String) -> Result<bool, rusqlite::Error> {
+    let mut stmt = conn.prepare("UPDATE tickets SET expended = 1 WHERE id = ?;")?;
+    stmt.execute(params![ticket_id])?;
+    Ok(true)
+}

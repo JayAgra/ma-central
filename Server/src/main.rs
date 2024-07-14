@@ -369,6 +369,40 @@ fn package_pass(pass_dir_path: &PathBuf, output_dir: PathBuf) -> PathBuf {
 }
 // end pass creation extras
 
+async fn admin_consume_ticket(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.data == "admin" {
+        let event_id = req.match_info().get("event_id").unwrap();
+        let ticket_id = req.match_info().get("ticket_id").unwrap();
+        let ticket_results = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetTicketById, ticket_id.to_string()).await.expect("failed to get ticket");
+        if ticket_results.len() == 1 {
+            if ticket_results[0].event_id.to_string().as_str() == event_id {
+                if ticket_results[0].expended == 0 {
+                    db_main::expend_ticket(&db.main, ticket_id.to_string()).await?;
+                    Ok(HttpResponse::Ok()
+                        .content_type(ContentType::json())
+                        .body("true"))
+                } else {
+                    Ok(HttpResponse::Forbidden()
+                        .content_type(ContentType::json())
+                        .body("false"))
+                }
+            } else {
+                Ok(HttpResponse::Forbidden()
+                    .content_type(ContentType::json())
+                    .body("false"))
+            }
+        } else {
+            Ok(HttpResponse::Forbidden()
+            .content_type(ContentType::json())
+            .body("false"))
+        }
+    } else {
+        Ok(HttpResponse::Forbidden()
+            .content_type(ContentType::json())
+            .body("false"))
+    }
+}
+
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\", \"D6MFYYVHA8.com.jayagra.ma-central-admin\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
@@ -521,6 +555,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/ticketing/pkpass/{ticket_id}")
                     .route(web::get().to(tickets_generate_pass)),
+            )
+            .service(
+                web::resource("/api/v1/admin/consume_ticket/{event_id}/{ticket_id}")
+                    .route(web::get().to(admin_consume_ticket)),
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
