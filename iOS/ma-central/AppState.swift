@@ -114,7 +114,7 @@ class AppState: ObservableObject {
     }
     
     func loadTicketsJson(completionBlock: @escaping ([Ticket]) -> Void) {
-        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/tickets/user_valid/0") else { return }
+        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/tickets/user_valid/\(self.currentUser.first?.id ?? 0)") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
