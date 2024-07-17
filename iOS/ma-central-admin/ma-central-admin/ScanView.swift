@@ -16,8 +16,8 @@ struct ScanView: View {
     
     var body: some View {
         if eventId == nil {
-            Button("Use 1 as an example event ID") {
-                eventId = 1
+            Button("Use 2 as an example event ID") {
+                eventId = 2
             }
         } else {
             ZStack {

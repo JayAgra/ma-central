@@ -156,127 +156,33 @@ async fn tickets_get_all(db: web::Data<Databases>, user: db_auth::User) -> Resul
     }
 }
 
-async fn tickets_get_query(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    match req.match_info().get("query_type").unwrap() {
-        "event" => {
-            if user.data == "admin" {
-                Ok(HttpResponse::Ok()
-                    .insert_header(("Cache-Control", "no-cache"))
-                    .json(
-                        db_main::execute_tickets(
-                            &db.main,
-                            db_main::TicketQuery::GetEventTickets,
-                            req.match_info().get("query_data").unwrap().to_string()
-                        ).await?
-                    )
-                )
-            } else {
-                Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
-            }
-        }
-        "user" => {
-            if user.data == "admin" {
-                Ok(HttpResponse::Ok()
-                    .insert_header(("Cache-Control", "no-cache"))
-                    .json(
-                        db_main::execute_tickets(
-                            &db.main,
-                            db_main::TicketQuery::GetUserTickets,
-                            req.match_info().get("query_data").unwrap().to_string()
-                        ).await?
-                    )
-                )
-            } else {
-                Ok(HttpResponse::Ok()
-                    .insert_header(("Cache-Control", "no-cache"))
-                    .json(
-                        db_main::execute_tickets(
-                            &db.main,
-                            db_main::TicketQuery::GetUserTickets,
-                            user.id.to_string()
-                        ).await?
-                    )
-                )
-            }
-        }
-        "event_valid" => {
-            if user.data == "admin" {
-                Ok(HttpResponse::Ok()
-                    .insert_header(("Cache-Control", "no-cache"))
-                    .json(
-                        db_main::execute_tickets(
-                            &db.main,
-                            db_main::TicketQuery::GetValidEventTickets,
-                            req.match_info().get("query_data").unwrap().to_string()
-                        ).await?
-                    )
-                )
-            } else {
-                Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
-            }
-        }
-        "user_valid" => {
-            if user.data == "admin" {
-                Ok(HttpResponse::Ok()
-                    .insert_header(("Cache-Control", "no-cache"))
-                    .json(
-                        db_main::execute_tickets(
-                            &db.main,
-                            db_main::TicketQuery::GetValidUserTickets,
-                            req.match_info().get("query_data").unwrap().to_string(),
-                        ).await?
-                    )
-                )
-            } else {
-                Ok(HttpResponse::Ok()
-                    .insert_header(("Cache-Control", "no-cache"))
-                    .json(
-                        db_main::execute_tickets(
-                            &db.main,
-                            db_main::TicketQuery::GetValidUserTickets,
-                            user.id.to_string(),
-                        ).await?
-                    )
-                )
-            }
-        }
-        _ => {
-            Err(error::ErrorBadRequest("{\"status\": \"bad_query_type\"}"))
-        }
-    }
-}
-
 async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    let event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, req.match_info().get("event_id").unwrap().parse::<i64>().unwrap() as u128).await?;
-    if event.len() == 1 {
-        let start = SystemTime::now();
-        let since_the_epoch = start
-            .duration_since(UNIX_EPOCH)
-            .expect("time just went fucking backwards");
-        if event[0].last_sale_date > since_the_epoch.as_millis() as i64 {
-            let owned_tickets = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetUserEventTickets, format!("{}_{}", user.id, event[0].id)).await?;
+    if user.data == "admin" {
+        let event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, req.match_info().get("event_id").unwrap().parse::<i64>().unwrap() as u128).await?;
+        let user_id = req.match_info().get("user_id").unwrap();
+        if event.len() == 1 {
+            let start = SystemTime::now();
+            let since_the_epoch = start
+                .duration_since(UNIX_EPOCH)
+                .expect("time just went fucking backwards");
+            let owned_tickets = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetUserEventTickets, format!("{}_{}", user_id, event[0].id)).await?;
             if owned_tickets.len() == 0 {
-                let user_results = db_auth::execute_scores(&db.auth, db_auth::AuthData::GetCurrentUserScore, user.id).await?;
-                if user_results[0].score >= event[0].ticket_price {
-                    let point_deduction = db_auth::update_points(&db.auth, user.id, event[0].ticket_price * -1).await?;
-                    if point_deduction {
-                        Ok(HttpResponse::Ok()
-                            .insert_header(("Cache-Control", "no-cache"))
-                            .json(db_main::create_ticket(&db.main, event[0].id, user.id, since_the_epoch.as_millis()).await?))
-                    } else {
-                        Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
-                    }
+                let point_deduction = db_auth::update_points(&db.auth, user_id.parse::<i64>().unwrap_or(0), event[0].point_reward).await?;
+                if point_deduction {
+                    Ok(HttpResponse::Ok()
+                        .insert_header(("Cache-Control", "no-cache"))
+                        .json(db_main::create_ticket(&db.main, event[0].id, user_id.parse::<i64>().unwrap_or(0), since_the_epoch.as_millis()).await?))
                 } else {
-                    Err(error::ErrorForbidden("{\"status\": \"balance_too_low\"}"))
+                    Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
                 }
             } else {
                 Err(error::ErrorLocked("{\"status\": \"ticket_sale_ended\"}"))
             }
         } else {
-            Err(error::ErrorLocked("{\"status\": \"ticket_sale_ended\"}"))
+            Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
         }
     } else {
-        Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
+        Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
     }
 }
 
@@ -368,40 +274,6 @@ fn package_pass(pass_dir_path: &PathBuf, output_dir: PathBuf) -> PathBuf {
     output_dir.join("pass.pkpass")
 }
 // end pass creation extras
-
-async fn admin_consume_ticket(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    if user.data == "admin" {
-        let event_id = req.match_info().get("event_id").unwrap();
-        let ticket_id = req.match_info().get("ticket_id").unwrap();
-        let ticket_results = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetTicketById, ticket_id.to_string()).await.expect("failed to get ticket");
-        if ticket_results.len() == 1 {
-            if ticket_results[0].event_id.to_string().as_str() == event_id {
-                if ticket_results[0].expended == 0 {
-                    let _ = db_main::expend_ticket(&db.main, ticket_id.to_string()).await;
-                    Ok(HttpResponse::Ok()
-                        .content_type(ContentType::plaintext())
-                        .body("true"))
-                } else {
-                    Ok(HttpResponse::Forbidden()
-                        .content_type(ContentType::plaintext())
-                        .body("false"))
-                }
-            } else {
-                Ok(HttpResponse::Forbidden()
-                    .content_type(ContentType::plaintext())
-                    .body("false"))
-            }
-        } else {
-            Ok(HttpResponse::Forbidden()
-            .content_type(ContentType::plaintext())
-            .body("false"))
-        }
-    } else {
-        Ok(HttpResponse::Forbidden()
-            .content_type(ContentType::plaintext())
-            .body("false"))
-    }
-}
 
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\", \"D6MFYYVHA8.com.jayagra.ma-central-admin\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
@@ -545,20 +417,12 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(tickets_get_all)),
             )
             .service(
-                web::resource("/api/v1/tickets/{query_type}/{query_data}")
-                    .route(web::get().to(tickets_get_query)),
-            )
-            .service(
-                web::resource("/api/v1/tickets_create/{event_id}")
+                web::resource("/api/v1/tickets_create/{user_id}/{event_id}")
                     .route(web::get().to(tickets_create_ticket)),
             )
             .service(
                 web::resource("/api/v1/ticketing/pkpass/{ticket_id}")
                     .route(web::get().to(tickets_generate_pass)),
-            )
-            .service(
-                web::resource("/api/v1/admin/consume_ticket/{event_id}/{ticket_id}")
-                    .route(web::get().to(admin_consume_ticket)),
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?

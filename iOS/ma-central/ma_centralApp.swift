@@ -22,12 +22,12 @@ struct ma_centralApp: App {
                             Label("home", systemImage: "house")
                         }
                         .tag(Tab.home)
-                    EventsView()
+                    LeaderboardView()
                         .environmentObject(appState)
                         .tabItem {
                             Label("events", systemImage: "calendar")
                         }
-                        .tag(Tab.events)
+                        .tag(Tab.leaderboard)
                     SettingsView()
                         .environmentObject(appState)
                         .tabItem {

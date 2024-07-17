@@ -13,8 +13,7 @@ pub struct Event {
     pub longitude: f64,
     pub details: String,
     pub image: String, // 640x320 or 1280x640
-    pub ticket_price: i64,
-    pub last_sale_date: i64,
+    pub point_reward: i64,
 }
 
 #[derive(Serialize, Clone)]
@@ -22,8 +21,6 @@ pub struct Ticket {
     pub id: i64,
     pub event_id: i64,
     pub holder_id: i64,
-    pub single_entry: i8, // 0 or 1
-    pub expended: i8, // 0 or 1
     pub creation_date: i64,
 }
 
@@ -80,8 +77,7 @@ fn get_event_rows(mut statement: Statement) -> Result<Vec<Event>, rusqlite::Erro
                 longitude: row.get(6)?,
                 details: row.get(7)?,
                 image: row.get(8)?,
-                ticket_price: row.get(9)?,
-                last_sale_date: row.get(10)?,
+                point_reward: row.get(9)?,
             })
         })
         .and_then(Iterator::collect)
@@ -89,10 +85,6 @@ fn get_event_rows(mut statement: Statement) -> Result<Vec<Event>, rusqlite::Erro
 
 pub enum TicketQuery {
     GetAllTickets,
-    GetEventTickets,
-    GetUserTickets,
-    GetValidEventTickets,
-    GetValidUserTickets,
     GetTicketById,
     GetUserEventTickets
 }
@@ -105,10 +97,6 @@ pub async fn execute_tickets(pool: &Pool, query: TicketQuery, parameter: String)
     web::block(move || {
         match query {
             TicketQuery::GetAllTickets => get_all_tickets(conn),
-            TicketQuery::GetEventTickets => get_event_tickets(conn, parameter),
-            TicketQuery::GetUserTickets => get_user_tickets(conn, parameter),
-            TicketQuery::GetValidEventTickets => get_valid_event_tickets(conn, parameter),
-            TicketQuery::GetValidUserTickets => get_valid_user_tickets(conn, parameter),
             TicketQuery::GetTicketById => get_ticket_id(conn, parameter),
             TicketQuery::GetUserEventTickets => get_user_event_tickets(conn, parameter),
         }
@@ -122,34 +110,14 @@ fn get_all_tickets(conn: Connection) -> Result<Vec<Ticket>, rusqlite::Error> {
     get_ticket_rows(stmt)
 }
 
-fn get_event_tickets(conn: Connection, event_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE event_id={} ORDER BY creation_date DESC;", event_id.parse::<i64>().unwrap_or(0)).as_str())?;
-    get_ticket_rows(stmt)
-}
-
-fn get_user_tickets(conn: Connection, holder_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} ORDER BY creation_date DESC;", holder_id.parse::<i64>().unwrap_or(0)).as_str())?;
-    get_ticket_rows(stmt)
-}
-
-fn get_valid_event_tickets(conn: Connection, event_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE event_id={} AND expended=0 ORDER BY creation_date DESC;", event_id.parse::<i64>().unwrap_or(0)).as_str())?;
-    get_ticket_rows(stmt)
-}
-
-fn get_valid_user_tickets(conn: Connection, holder_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND expended=0 ORDER BY creation_date DESC;", holder_id.parse::<i64>().unwrap_or(0)).as_str())?;
-    get_ticket_rows(stmt)
-}
-
 fn get_ticket_id(conn: Connection, ticket_id: String) -> Result<Vec<Ticket>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE id={} AND expended=0;", ticket_id).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE id={}", ticket_id).as_str())?;
     get_ticket_rows(stmt)
 }
 
 fn get_user_event_tickets(conn: Connection, user_event: String) -> Result<Vec<Ticket>, rusqlite::Error> {
     let user_event_data: Vec<&str> = user_event.split("_").collect();
-    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND event_id={} AND expended=0;", user_event_data[0], user_event_data[1]).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM tickets WHERE holder_id={} AND event_id={}", user_event_data[0], user_event_data[1]).as_str())?;
     get_ticket_rows(stmt)
 }
 
@@ -160,9 +128,7 @@ fn get_ticket_rows(mut statement: Statement) -> Result<Vec<Ticket>, rusqlite::Er
                 id: row.get(0)?,
                 event_id: row.get(1)?,
                 holder_id: row.get(2)?,
-                single_entry: row.get(3)?,
-                expended: row.get(4)?,
-                creation_date: row.get(5)?,
+                creation_date: row.get(3)?,
             })
         })
         .and_then(Iterator::collect)
@@ -182,7 +148,7 @@ pub async fn create_ticket(pool: &Pool, event_id: i64, user_id: i64, creation_da
 
 fn get_ticket_sql(conn: Connection, event_id: i64, user_id: i64, creation_date: u128) -> Result<Ticket, rusqlite::Error> {
     let ticket_id: i64 = format!("{}{}{}", (creation_date % 1000).to_string(), format!("{:0>6}", event_id.to_string()), format!("{:0>7}", user_id.to_string())).parse::<i64>().unwrap();
-    let mut stmt = conn.prepare("INSERT INTO tickets (id, event_id, holder_id, single_entry, expended, creation_date) VALUES (?, ?, ?, ?, ?, ?)")?;
+    let mut stmt = conn.prepare("INSERT INTO tickets (id, event_id, holder_id, creation_date) VALUES (?, ?, ?, ?)")?;
     stmt.execute(params![
         ticket_id,
         event_id,
@@ -191,7 +157,7 @@ fn get_ticket_sql(conn: Connection, event_id: i64, user_id: i64, creation_date: 
         0,
         creation_date as i64
     ])?;
-    Ok(Ticket { id: ticket_id, event_id, holder_id: user_id, single_entry: 1, expended: 0, creation_date: creation_date as i64 })
+    Ok(Ticket { id: ticket_id, event_id, holder_id: user_id, creation_date: creation_date as i64 })
 }
 
 pub async fn expend_ticket(pool: &Pool, ticket_id: String) -> Result<bool, Error> {

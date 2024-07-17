@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 enum Tab {
-    case home, events, settings
+    case home, leaderboard, settings
 }
 
 struct UserData {
@@ -23,7 +23,6 @@ class AppState: ObservableObject {
     @Published public var selectedTab: Tab = .home
     @Published public var sessionOk: Bool = false
     @Published public var futureEvents: [Event] = []
-    @Published public var userTickets: [Ticket] = []
     @Published public var currentUser: [UserPoints] = []
     private var cancellables: Set<AnyCancellable> = []
     
@@ -112,39 +111,6 @@ class AppState: ObservableObject {
             self.currentUser = output
         }
     }
-    
-    func loadTicketsJson(completionBlock: @escaping ([Ticket]) -> Void) {
-        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/tickets/user_valid/\(self.currentUser.first?.id ?? 0)") else { return }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.httpShouldHandleCookies = true
-        
-        let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    let result = try decoder.decode([Ticket].self, from: data)
-                    DispatchQueue.main.async {
-                        completionBlock(result)
-                    }
-                } catch {
-                    print("parse error")
-                    completionBlock([])
-                }
-            } else if let error = error {
-                print("fetch error: \(error)")
-                completionBlock([])
-            }
-        }
-        requestTask.resume()
-    }
-    
-    func refreshUserTickets() {
-        self.loadTicketsJson() { (output) in
-            self.userTickets = output
-        }
-    }
 }
 
 struct Event: Codable {
@@ -153,11 +119,7 @@ struct Event: Codable {
     let latitude, longitude: Double
     let details: String
     let image: String
-    let ticket_price, last_sale_date: Int
-}
-
-struct Ticket: Codable {
-    let id, event_id, holder_id, single_entry, expended, creation_date: Int
+    let point_reward: Int
 }
 
 struct UserPoints: Codable {
