@@ -25,7 +25,7 @@ struct ma_centralApp: App {
                     LeaderboardView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("events", systemImage: "calendar")
+                            Label("leaderboard", systemImage: "trophy")
                         }
                         .tag(Tab.leaderboard)
                     SettingsView()

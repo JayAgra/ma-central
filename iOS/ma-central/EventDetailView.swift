@@ -27,49 +27,50 @@ struct EventDetailView: View {
             KFImage(URL(string: image == "" ? "https://jayagra.com/static-ish/IMG_6901.png?v=101" : image)!)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .ignoresSafeArea(.container)
             VStack {
-                Text(date)
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                Text(title)
-                    .font(.title)
-                    .fontWeight(.black)
-                    .foregroundColor(.primary)
-                    .lineLimit(3)
-                Text("\(location.uppercased())\n\n")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Text(details)
-                    .foregroundColor(.primary)
-                if #available(iOS 17.0, *) {
-                    Spacer()
-                    Map(initialPosition:
-                            MapCameraPosition.region(
-                                MKCoordinateRegion(
-                                    center:
-                                        CLLocationCoordinate2D(
-                                            latitude: latitude,
-                                            longitude: longitude
-                                        ),
-                                    span:
-                                        MKCoordinateSpan(
-                                            latitudeDelta: 0.05,
-                                            longitudeDelta: 0.05
-                                        )
+                ScrollView {
+                    Text(date)
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                    Text(title)
+                        .font(.title)
+                        .fontWeight(.black)
+                        .foregroundColor(.primary)
+                        .lineLimit(3)
+                    Text("\(location.uppercased())\n\n")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(details)
+                        .foregroundColor(.primary)
+                    if #available(iOS 17.0, *) {
+                        Spacer()
+                        Map(initialPosition:
+                                MapCameraPosition.region(
+                                    MKCoordinateRegion(
+                                        center:
+                                            CLLocationCoordinate2D(
+                                                latitude: latitude,
+                                                longitude: longitude
+                                            ),
+                                        span:
+                                            MKCoordinateSpan(
+                                                latitudeDelta: 0.05,
+                                                longitudeDelta: 0.05
+                                            )
+                                    )
                                 )
-                            )
-                    ) {
-                        Marker(title, coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+                        ) {
+                            Marker(title, coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+                        }
+                        .mapStyle(.standard)
+                        .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.4)
+                        .cornerRadius(10)
+                        .padding(.vertical)
+                    } else {
+                        // Fallback on earlier versions
                     }
-                    .mapStyle(.standard)
-                    .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.25)
-                    .cornerRadius(10)
-                    .padding(.vertical)
-                } else {
-                    // Fallback on earlier versions
+                    Spacer()
                 }
-                Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Spacer()

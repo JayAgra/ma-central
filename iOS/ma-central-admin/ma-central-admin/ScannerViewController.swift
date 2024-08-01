@@ -2,7 +2,7 @@
 //  ScannerViewController.swift
 //  ma-central-admin
 //
-//  Created by Jayen Agrawal on 7/14/24.
+//  Created by Jayen Agrawal on 8/1/24.
 //
 
 import UIKit
@@ -51,7 +51,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             captureSession.addOutput(metadataOutput)
 
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metadataOutput.metadataObjectTypes = [.pdf417] // Specify barcode type you want to scan
+            metadataOutput.metadataObjectTypes = [.code39]
         } else {
             failed()
             return

@@ -92,8 +92,8 @@ struct ScanView: View {
         }
     }
     
-    func consumeTicket(ticket: String, completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/admin/consume_ticket/\(String(eventId ?? 0))/\(ticket)") else { return }
+    func consumeTicket(attendee_id: String, completion: @escaping (Bool) -> Void) {
+        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/admin/add_attendee/\(String(eventId ?? 0))/\(attendee_id)") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -114,7 +114,7 @@ struct ScanView: View {
     }
     
     func runTicket(ticket: String) {
-        consumeTicket(ticket: ticket) { (success) in
+        consumeTicket(attendee_id: ticket) { (success) in
             ticketOk = success
         }
     }

@@ -15,7 +15,7 @@
 		F5359EB02C447C9F00B87CBB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5359EAF2C447C9F00B87CBB /* LoginView.swift */; };
 		F5359EB42C447F1B00B87CBB /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5359EB32C447F1B00B87CBB /* EventsView.swift */; };
 		F5359EBA2C447F3C00B87CBB /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5359EB92C447F3C00B87CBB /* ScanView.swift */; };
-		F5605CD62C4487440072BB04 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5605CD52C4487440072BB04 /* ScannerViewController.swift */; };
+		F5C0077E2C5BF805002B9017 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C0077D2C5BF805002B9017 /* ScannerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,8 +29,8 @@
 		F5359EAF2C447C9F00B87CBB /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F5359EB32C447F1B00B87CBB /* EventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
 		F5359EB92C447F3C00B87CBB /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
-		F5605CD52C4487440072BB04 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		F5605CD72C448A010072BB04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F5C0077D2C5BF805002B9017 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,7 +78,7 @@
 				F5359EAF2C447C9F00B87CBB /* LoginView.swift */,
 				F5359EB32C447F1B00B87CBB /* EventsView.swift */,
 				F5359EB92C447F3C00B87CBB /* ScanView.swift */,
-				F5605CD52C4487440072BB04 /* ScannerViewController.swift */,
+				F5C0077D2C5BF805002B9017 /* ScannerViewController.swift */,
 				F5359EAD2C447C5900B87CBB /* URLSessionConfiguration.swift */,
 				F5359EA12C447A2F00B87CBB /* Assets.xcassets */,
 				F5359EA02C447A2F00B87CBB /* Preview Content */,
@@ -158,7 +158,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5605CD62C4487440072BB04 /* ScannerViewController.swift in Sources */,
+				F5C0077E2C5BF805002B9017 /* ScannerViewController.swift in Sources */,
 				F5359EAC2C447BEA00B87CBB /* AppState.swift in Sources */,
 				F5359EA82C447A2F00B87CBB /* ma_central_adminApp.swift in Sources */,
 				F5359EB02C447C9F00B87CBB /* LoginView.swift in Sources */,

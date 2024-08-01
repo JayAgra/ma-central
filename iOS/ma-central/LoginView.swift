@@ -59,7 +59,7 @@ struct LoginView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .keyboardType(.numberPad)
                         .onChange(of: authData[3]) { _ in
-                            authData[3] = String(authData[3].prefix(5))
+                            authData[3] = String(authData[3].prefix(6))
                         }
                     TextField("full name", text: $authData[2])
                         .padding([.leading, .trailing])
