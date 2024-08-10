@@ -159,19 +159,20 @@ async fn tickets_get_all(db: web::Data<Databases>, user: db_auth::User) -> Resul
 async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.data == "admin" {
         let event = db_main::execute_events(&db.main, db_main::EventQuery::GetEventById, req.match_info().get("event_id").unwrap().parse::<i64>().unwrap() as u128).await?;
-        let user_id = req.match_info().get("user_id").unwrap();
+        let student_id = req.match_info().get("user_id").unwrap();
+        let target_user = db_auth::get_user_student_id(&db.auth, student_id.to_string()).await?;
         if event.len() == 1 {
             let start = SystemTime::now();
             let since_the_epoch = start
                 .duration_since(UNIX_EPOCH)
                 .expect("time just went fucking backwards");
-            let owned_tickets = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetUserEventTickets, format!("{}_{}", user_id, event[0].id)).await?;
+            let owned_tickets = db_main::execute_tickets(&db.main, db_main::TicketQuery::GetUserEventTickets, format!("{}_{}", target_user.id, event[0].id)).await?;
             if owned_tickets.len() == 0 {
-                let point_deduction = db_auth::update_points(&db.auth, user_id.parse::<i64>().unwrap_or(0), event[0].point_reward).await?;
+                let point_deduction = db_auth::update_points(&db.auth, target_user.id, event[0].point_reward).await?;
                 if point_deduction {
                     Ok(HttpResponse::Ok()
                         .insert_header(("Cache-Control", "no-cache"))
-                        .json(db_main::create_ticket(&db.main, event[0].id, user_id.parse::<i64>().unwrap_or(0), since_the_epoch.as_millis()).await?))
+                        .json(db_main::create_ticket(&db.main, event[0].id, target_user.id, since_the_epoch.as_millis()).await?))
                 } else {
                     Err(error::ErrorInternalServerError("{\"status\": \"point_transaction_failed\"}"))
                 }
@@ -181,6 +182,7 @@ async fn tickets_create_ticket(req: HttpRequest, db: web::Data<Databases>, user:
         } else {
             Err(error::ErrorBadRequest("{\"status\": \"bad_event_id\"}"))
         }
+
     } else {
         Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
     }

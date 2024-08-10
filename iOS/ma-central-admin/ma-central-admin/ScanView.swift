@@ -12,7 +12,7 @@ struct ScanView: View {
     @State private var scannedValue: String?
     @State private var resetScan: Bool = true
     @State private var eventId: Int?
-    @State private var ticketOk: Bool?
+    @State private var ticketOk: Bool? = nil
     
     var body: some View {
         if eventId == nil {
@@ -93,13 +93,13 @@ struct ScanView: View {
     }
     
     func consumeTicket(attendee_id: String, completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/admin/add_attendee/\(String(eventId ?? 0))/\(attendee_id)") else { return }
+        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/tickets_create/\(attendee_id)/\(String(eventId ?? 0))") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
         
-        let requestTask: Void = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+        let _: Void = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
                     completion(true)

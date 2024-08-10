@@ -14,6 +14,27 @@ struct CardView: View {
     var title: String
     var location: String
     var dimensions: CGPoint
+    var humanDate: String
+    
+    init(image: String, date: String, title: String, location: String, dimensions: CGPoint) {
+        self.image = image
+        self.date = date
+        self.title = title
+        self.location = location
+        self.dimensions = dimensions
+        
+        if let unixTimestampMillis = Double(date) {
+            let unixTimestampSeconds = unixTimestampMillis / 1000
+            let date = Date(timeIntervalSince1970: unixTimestampSeconds)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .short
+            dateFormatter.locale = Locale.current
+            humanDate = dateFormatter.string(from: date)
+        } else {
+            humanDate = "Date Conversion Failure"
+        }
+    }
     
     var body: some View {
         if dimensions.x > dimensions.y {
@@ -25,7 +46,7 @@ struct CardView: View {
                     .frame(width: dimensions.x, height: dimensions.y)
                     .padding()
                 VStack(alignment: .leading) {
-                    Text(date)
+                    Text(humanDate)
                         .font(.headline)
                         .foregroundColor(.primary)
                         .shadow(color: .black, radius: 4, x: 0, y: 2)
@@ -50,7 +71,7 @@ struct CardView: View {
                     .aspectRatio(contentMode: .fit)
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(date)
+                        Text(humanDate)
                             .font(.headline)
                             .foregroundColor(.secondary)
                         Text(title)

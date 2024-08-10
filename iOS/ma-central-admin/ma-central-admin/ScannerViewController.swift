@@ -51,7 +51,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             captureSession.addOutput(metadataOutput)
 
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metadataOutput.metadataObjectTypes = [.code39]
+            metadataOutput.metadataObjectTypes = [.code39, .pdf417]
         } else {
             failed()
             return

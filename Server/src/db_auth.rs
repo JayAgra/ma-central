@@ -138,6 +138,32 @@ fn get_user_username_entry(conn: Connection, id: String) -> Result<User, rusqlit
     })
 }
 
+pub async fn get_user_student_id(pool: &Pool, student_id: String) -> Result<User, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || get_user_student_id_entry(conn, student_id))
+        .await?
+        .map_err(error::ErrorInternalServerError)
+}
+
+fn get_user_student_id_entry(conn: Connection, id: String) -> Result<User, rusqlite::Error> {
+    let mut stmt = conn.prepare("SELECT * FROM users WHERE student_id=?1;")?;
+    stmt.query_row([id], |row| {
+        Ok(User {
+            id: row.get(0)?,
+            student_id: row.get(1)?,
+            username: row.get(2)?,
+            full_name: row.get(3)?,
+            pass_hash: row.get(4)?,
+            lifetime: row.get(5)?,
+            score: row.get(6)?,
+            data: row.get(7)?,
+        })
+    })
+}
+
 pub async fn create_user(pool: &Pool, student_id: String, full_name: String, username: String, password: String) -> Result<User, Error> {
     let pool = pool.clone();
     let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;

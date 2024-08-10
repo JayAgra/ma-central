@@ -88,3 +88,7 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
         }
     )
 }
+
+// pub fn generate_id_json(ticket: db_main::Ticket, event: db_main::Event, user: db_auth::User) -> Value {
+    
+// }
