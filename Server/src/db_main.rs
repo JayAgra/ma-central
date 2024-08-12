@@ -153,8 +153,6 @@ fn get_ticket_sql(conn: Connection, event_id: i64, user_id: i64, creation_date: 
         ticket_id,
         event_id,
         user_id,
-        1,
-        0,
         creation_date as i64
     ])?;
     Ok(Ticket { id: ticket_id, event_id, holder_id: user_id, creation_date: creation_date as i64 })

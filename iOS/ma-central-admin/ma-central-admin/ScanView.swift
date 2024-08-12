@@ -104,6 +104,9 @@ struct ScanView: View {
                 if httpResponse.statusCode == 200 {
                     completion(true)
                 } else {
+                    print(httpResponse.statusCode)
+                    print(attendee_id)
+                    print(eventId)
                     completion(false)
                 }
             } else {
