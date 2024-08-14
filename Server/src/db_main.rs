@@ -203,7 +203,6 @@ fn execute_delete_event(mut statement: Statement, params: String) -> Result<Stri
 
 #[derive(Serialize, Deserialize)]
 pub struct EventCreateData {
-    pub id: i64,
     pub start_time: i64,
     pub end_time: i64,
     pub title: String,
