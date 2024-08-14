@@ -11,21 +11,18 @@ struct LeaderboardView: View {
     @State var leaderboard: [UserPoints] = []
     
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(leaderboard, id: \.id) { user in
-                    HStack {
-                        Text(String(user.username))
-                        Spacer()
-                        Text(String(user.score))
-                            .font(.headline)
-                    }
+        List {
+            ForEach(leaderboard, id: \.id) { user in
+                HStack {
+                    Text(String(user.username))
+                    Spacer()
+                    Text(String(user.score))
+                        .font(.headline)
                 }
             }
-            .navigationTitle("Leaderboard")
-            .onAppear {
-                reloadLeaderboard()
-            }
+        }
+        .onAppear {
+            reloadLeaderboard()
         }
         .refreshable {
             reloadLeaderboard()

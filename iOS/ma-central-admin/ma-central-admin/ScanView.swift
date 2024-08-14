@@ -106,7 +106,6 @@ struct ScanView: View {
                 } else {
                     print(httpResponse.statusCode)
                     print(attendee_id)
-                    print(eventId)
                     completion(false)
                 }
             } else {

@@ -10,7 +10,6 @@ import Kingfisher
 import MapKit
 
 struct EventDetailView: View {
-    @EnvironmentObject var appState: AppState
     var event_id: Int
     var image: String
     var date: String
@@ -20,31 +19,6 @@ struct EventDetailView: View {
     var longitude: Double
     var details: String
     var pointReward: Int
-    var humanDate: String
-    
-    init(event_id: Int, image: String, date: String, title: String, location: String, latitude: Double, longitude: Double, details: String, pointReward: Int) {
-        self.event_id = event_id
-        self.image = image
-        self.date = date
-        self.title = title
-        self.location = location
-        self.latitude = latitude
-        self.longitude = longitude
-        self.details = details
-        self.pointReward = pointReward
-        
-        if let unixTimestampMillis = Double(date) {
-            let unixTimestampSeconds = unixTimestampMillis / 1000
-            let date = Date(timeIntervalSince1970: unixTimestampSeconds)
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .medium
-            dateFormatter.timeStyle = .short
-            dateFormatter.locale = Locale.current
-            humanDate = dateFormatter.string(from: date)
-        } else {
-            humanDate = "Date Conversion Failure"
-        }
-    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -54,7 +28,7 @@ struct EventDetailView: View {
                 .aspectRatio(contentMode: .fit)
             VStack {
                 ScrollView {
-                    Text(humanDate)
+                    Text(date)
                         .font(.headline)
                         .foregroundColor(.secondary)
                     Text(title)
@@ -96,13 +70,13 @@ struct EventDetailView: View {
                     }
                     Spacer()
                 }
+                .padding(.horizontal)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             Spacer()
         }
     }
     }
-    
 }
 
 #Preview {

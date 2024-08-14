@@ -22,12 +22,12 @@ struct ma_centralApp: App {
                             Label("home", systemImage: "house")
                         }
                         .tag(Tab.home)
-                    LeaderboardView()
+                    EventView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("leaderboard", systemImage: "trophy")
+                            Label("events", systemImage: "calendar")
                         }
-                        .tag(Tab.leaderboard)
+                        .tag(Tab.events)
                     SettingsView()
                         .environmentObject(appState)
                         .tabItem {
@@ -35,12 +35,10 @@ struct ma_centralApp: App {
                         }
                         .tag(Tab.settings)
                 }
-                .preferredColorScheme(.dark)
                 .environmentObject(appState)
             } else {
                 LoginView()
                     .environmentObject(appState)
-                    .preferredColorScheme(.dark)
             }
         }
     }

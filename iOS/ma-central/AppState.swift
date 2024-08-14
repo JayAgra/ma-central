@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 enum Tab {
-    case home, leaderboard, settings
+    case home, events, settings
 }
 
 struct UserData {
@@ -50,7 +50,7 @@ class AppState: ObservableObject {
                     let decoder = JSONDecoder()
                     let result = try decoder.decode([Event].self, from: data)
                     DispatchQueue.main.async {
-                        completionBlock(result)
+                        completionBlock(result.sorted { $0.start_time < $1.start_time })
                     }
                 } catch {
                     print("parse error")
