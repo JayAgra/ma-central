@@ -41,8 +41,12 @@ struct SettingsView: View {
                         }
                         .foregroundStyle(Color.pink)
                     }
-                    Text("For other account help (such as adding your student ID), please send an email to dev@jayagra.com containing your username, full name, and user ID (\(String(appState.currentUser.first?.id ?? 0))).")
                 }
+                Text("For other account help (such as adding your student ID), please send an email to dev@jayagra.com containing your username, full name, and user ID (\(String(appState.currentUser.first?.id ?? 0))).")
+                    .foregroundStyle(.secondary)
+                    .font(.caption)
+                    .padding()
+                Spacer()
             }
             .navigationTitle("Settings")
         }

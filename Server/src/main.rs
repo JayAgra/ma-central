@@ -277,6 +277,28 @@ fn package_pass(pass_dir_path: &PathBuf, output_dir: PathBuf) -> PathBuf {
 }
 // end pass creation extras
 
+async fn manage_delete_event(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.data == "admin" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body(db_main::delete_event(&db.main, req.match_info().get("event_id").unwrap().to_string()).await?)
+        )
+    } else {
+        Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_create_event(data: web::Json<db_main::EventCreateData>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.data == "admin" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body(db_main::execute_insert(&db.main, data).await?)
+        )
+    } else {
+        Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
+    }
+}
+
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\", \"D6MFYYVHA8.com.jayagra.ma-central-admin\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
@@ -425,6 +447,14 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/ticketing/pkpass/{ticket_id}")
                     .route(web::get().to(tickets_generate_pass)),
+            )
+            .service(
+                web::resource("/api/v1/manage/events/delete/{event_id}")
+                    .route(web::delete().to(manage_delete_event)),
+            )
+            .service(
+                web::resource("/api/v1/manage/events/create")
+                    .route(web::post().to(manage_create_event)),
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?

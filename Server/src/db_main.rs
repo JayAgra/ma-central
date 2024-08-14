@@ -1,6 +1,6 @@
 use actix_web::{error, web, Error};
 use rusqlite::{params, Statement};
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Clone)]
 pub struct Event {
@@ -174,4 +174,72 @@ fn expend_ticket_sql(conn: Connection, ticket_id: String) -> Result<bool, rusqli
     let mut stmt = conn.prepare("UPDATE tickets SET expended = 1 WHERE id = ?;")?;
     stmt.execute(params![ticket_id])?;
     Ok(true)
+}
+
+pub async fn delete_event(pool: &Pool, params: String) -> Result<String, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        delete_event_sql(conn, params)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+fn delete_event_sql(connection: Connection, params: String) -> Result<String, rusqlite::Error> {
+    let stmt = connection.prepare("DELETE FROM users WHERE id=?1 AND score!=?2;")?;
+    execute_delete_event(stmt, params)
+}
+
+fn execute_delete_event(mut statement: Statement, params: String) -> Result<String, rusqlite::Error> {
+    if statement.execute([params]).is_ok() {
+        Ok("{\"status\":200}".to_string())
+    } else {
+        Err(rusqlite::Error::ExecuteReturnedResults)
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct EventCreateData {
+    pub id: i64,
+    pub start_time: i64,
+    pub end_time: i64,
+    pub title: String,
+    pub human_location: String,
+    pub latitude: f64,
+    pub longitude: f64,
+    pub details: String,
+    pub image: String, // 640x320 or 1280x640
+    pub point_reward: i64,
+}
+
+pub async fn execute_insert(pool: &Pool, data: web::Json<EventCreateData>) -> Result<String, actix_web::Error> {
+    // clone pools for all databases
+    let pool = pool.clone();
+
+    // get connections to all databases
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || insert_main_data(conn, &data))
+        .await?
+        .map_err(error::ErrorInternalServerError)
+}
+
+fn insert_main_data(conn: Connection, data: &web::Json<EventCreateData>) -> Result<String, rusqlite::Error> {
+    let mut stmt = conn.prepare("INSERT INTO events (start_time, end_time, title, human_location, latitude, longitude, details, image, point_reward) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
+    stmt.execute(params![
+        data.start_time,
+        data.end_time,
+        data.title,
+        data.human_location,
+        data.latitude,
+        data.longitude,
+        data.details,
+        data.image,
+        data.point_reward
+    ])?;
+
+    Ok("done".to_string())
 }

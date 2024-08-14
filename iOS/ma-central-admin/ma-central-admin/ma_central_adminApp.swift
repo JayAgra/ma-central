@@ -14,22 +14,9 @@ struct ma_central_adminApp: App {
     var body: some Scene {
         WindowGroup {
             if appState.sessionOk {
-                TabView(selection: $appState.selectedTab) {
-                    EventsView()
-                        .environmentObject(appState)
-                        .tabItem {
-                            Label("events", systemImage: "calendar")
-                        }
-                        .tag(Tab.events)
-                    ScanView()
-                        .environmentObject(appState)
-                        .tabItem {
-                            Label("scan", systemImage: "barcode.viewfinder")
-                        }
-                        .tag(Tab.scan)
-                }
-                .preferredColorScheme(.dark)
-                .environmentObject(appState)
+                EventsView()
+                    .environmentObject(appState)
+                    .preferredColorScheme(.dark)
             } else {
                 LoginView()
                     .environmentObject(appState)

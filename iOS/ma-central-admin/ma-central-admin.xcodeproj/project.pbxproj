@@ -16,6 +16,7 @@
 		F5359EB42C447F1B00B87CBB /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5359EB32C447F1B00B87CBB /* EventsView.swift */; };
 		F5359EBA2C447F3C00B87CBB /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5359EB92C447F3C00B87CBB /* ScanView.swift */; };
 		F5C0077E2C5BF805002B9017 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C0077D2C5BF805002B9017 /* ScannerViewController.swift */; };
+		F5C7430B2C6D6D7B00CD17A2 /* NewEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C7430A2C6D6D7B00CD17A2 /* NewEvent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		F5359EB92C447F3C00B87CBB /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		F5605CD72C448A010072BB04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F5C0077D2C5BF805002B9017 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
+		F5C7430A2C6D6D7B00CD17A2 /* NewEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEvent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 				F5359EAB2C447BEA00B87CBB /* AppState.swift */,
 				F5359EAF2C447C9F00B87CBB /* LoginView.swift */,
 				F5359EB32C447F1B00B87CBB /* EventsView.swift */,
+				F5C7430A2C6D6D7B00CD17A2 /* NewEvent.swift */,
 				F5359EB92C447F3C00B87CBB /* ScanView.swift */,
 				F5C0077D2C5BF805002B9017 /* ScannerViewController.swift */,
 				F5359EAD2C447C5900B87CBB /* URLSessionConfiguration.swift */,
@@ -163,6 +166,7 @@
 				F5359EA82C447A2F00B87CBB /* ma_central_adminApp.swift in Sources */,
 				F5359EB02C447C9F00B87CBB /* LoginView.swift in Sources */,
 				F5359EBA2C447F3C00B87CBB /* ScanView.swift in Sources */,
+				F5C7430B2C6D6D7B00CD17A2 /* NewEvent.swift in Sources */,
 				F5359EAE2C447C5900B87CBB /* URLSessionConfiguration.swift in Sources */,
 				F5359EB42C447F1B00B87CBB /* EventsView.swift in Sources */,
 			);
@@ -297,7 +301,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "ma-central-admin/ma-central-admin.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1000;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ma-central-admin/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -316,7 +320,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.ma-central-admin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -336,7 +340,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "ma-central-admin/ma-central-admin.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1000;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ma-central-admin/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -355,7 +359,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.ma-central-admin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

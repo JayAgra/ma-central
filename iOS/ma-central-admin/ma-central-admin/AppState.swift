@@ -6,24 +6,14 @@
 //
 
 import Foundation
-import Combine
-
-enum Tab {
-    case events, tickets, users, scan
-}
 
 class AppState: ObservableObject {
-    @Published public var selectedTab: Tab = .events
     @Published public var sessionOk: Bool = false
-    private var cancellables: Set<AnyCancellable> = []
+    @Published public var futureEvents: [Event] = []
     
     init() {
-        $selectedTab
-            .receive(on: DispatchQueue.main)
-            .sink { _ in }
-            .store(in: &cancellables)
-
         self.checkLoginState()
+        self.refreshFutureEvents()
     }
     
     func checkLoginState() {
@@ -46,4 +36,46 @@ class AppState: ObservableObject {
         }
         requestTask.resume()
     }
+    
+    func loadEventsJson(type: String, completionBlock: @escaping ([Event]) -> Void) {
+        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/events/\(type)") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.httpShouldHandleCookies = true
+        
+        let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode([Event].self, from: data)
+                    DispatchQueue.main.async {
+                        completionBlock(result.sorted { $0.start_time < $1.start_time })
+                    }
+                } catch {
+                    print("parse error")
+                    completionBlock([])
+                }
+            } else if let error = error {
+                print("fetch error: \(error)")
+                completionBlock([])
+            }
+        }
+        requestTask.resume()
+    }
+    
+    func refreshFutureEvents() {
+        self.loadEventsJson(type: "future") { (output) in
+            self.futureEvents = output
+        }
+    }
+}
+
+struct Event: Codable {
+    let id, start_time, end_time: Int
+    let title, human_location: String
+    let latitude, longitude: Double
+    let details: String
+    let image: String
+    let point_reward: Int
 }

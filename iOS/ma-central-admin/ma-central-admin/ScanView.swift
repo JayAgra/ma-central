@@ -11,81 +11,86 @@ struct ScanView: View {
     @EnvironmentObject var appState: AppState
     @State private var scannedValue: String?
     @State private var resetScan: Bool = true
-    @State private var eventId: Int?
+    var eventId: Int
+    var eventTitle: String
     @State private var ticketOk: Bool? = nil
     
+    init(eventId: Int, eventTitle: String) {
+        self.eventId = eventId
+        self.eventTitle = eventTitle
+    }
+    
     var body: some View {
-        if eventId == nil {
-            Button("Use 2 as an example event ID") {
-                eventId = 2
+        ZStack {
+            ScannerView(scannedValue: $scannedValue, resetScan: $resetScan)
+                .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                Text("Scanning for \(eventTitle)")
+                Spacer()
             }
-        } else {
-            ZStack {
-                ScannerView(scannedValue: $scannedValue, resetScan: $resetScan)
+            
+            if scannedValue != nil {
+                if ticketOk == nil {
+                    VStack {
+                        Spacer()
+                        Spacer()
+                        Text("Validating ticket...")
+                        ProgressView()
+                        Spacer()
+                        Button("Cancel") {
+                            resetScan = true
+                            ticketOk = nil
+                        }
+                        Spacer()
+                    }
                     .edgesIgnoringSafeArea(.all)
-                
-                if scannedValue != nil {
-                    if ticketOk == nil {
-                        VStack {
-                            Spacer()
-                            Spacer()
-                            Text("Validating ticket...")
-                            ProgressView()
-                            Spacer()
-                            Button("Cancel") {
-                                resetScan = true
-                                ticketOk = nil
-                            }
-                            Spacer()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black)
+                    .onAppear() {
+                        runTicket(ticket: scannedValue ?? "")
+                    }
+                } else if ticketOk == true {
+                    VStack {
+                        Spacer()
+                        Spacer()
+                        Text("Ticket is valid")
+                        Spacer()
+                        Button("Continue") {
+                            resetScan = true
+                            ticketOk = nil
                         }
-                        .edgesIgnoringSafeArea(.all)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black)
-                        .onAppear() {
-                            runTicket(ticket: scannedValue ?? "")
+                        .foregroundColor(Color.white)
+                        Spacer()
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.green)
+                    .onAppear() {
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            resetScan = true
+                            ticketOk = nil
                         }
-                    } else if ticketOk == true {
-                        VStack {
-                            Spacer()
-                            Spacer()
-                            Text("Ticket is valid")
-                            Spacer()
-                            Button("Continue") {
-                                resetScan = true
-                                ticketOk = nil
-                            }
-                            .foregroundColor(Color.white)
-                            Spacer()
+                    }
+                } else {
+                    VStack {
+                        Spacer()
+                        Spacer()
+                        Text("Ticket invalid")
+                        Spacer()
+                        Button("Continue") {
+                            resetScan = true
+                            ticketOk = nil
                         }
-                        .edgesIgnoringSafeArea(.all)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.green)
-                        .onAppear() {
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                resetScan = true
-                                ticketOk = nil
-                            }
-                        }
-                    } else {
-                        VStack {
-                            Spacer()
-                            Spacer()
-                            Text("Ticket invalid")
-                            Spacer()
-                            Button("Continue") {
-                                resetScan = true
-                                ticketOk = nil
-                            }
-                            .foregroundColor(Color.white)
-                            Spacer()
-                        }
-                        .edgesIgnoringSafeArea(.all)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.red)
-                        .onAppear() {
-                            UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
+                        .foregroundColor(Color.white)
+                        Spacer()
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.red)
+                    .onAppear() {
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
                 }
             }
@@ -93,7 +98,7 @@ struct ScanView: View {
     }
     
     func consumeTicket(attendee_id: String, completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/tickets_create/\(attendee_id)/\(String(eventId ?? 0))") else { return }
+        guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/tickets_create/\(attendee_id)/\(String(eventId))") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -123,5 +128,5 @@ struct ScanView: View {
 }
 
 #Preview {
-    ScanView()
+    ScanView(eventId: 1, eventTitle: "Test")
 }
