@@ -16,7 +16,7 @@ struct LeaderboardView: View {
                 HStack {
                     Text(String(user.username))
                     Spacer()
-                    Text(String(user.score))
+                    Text(String(user.lifetime))
                         .font(.headline)
                 }
             }
