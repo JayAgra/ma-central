@@ -11,6 +11,7 @@ struct EventsView: View {
     @EnvironmentObject var appState: AppState
     @State private var lastDeletedIndex: Int?
     @State private var lastDeletedId: String = "-1"
+    @State private var lastDeletedName: String = ""
     @State private var showConfirmDialog: Bool = false
     @State public var allEvents: [Event] = []
     var dateFormatter = DateFormatter()
@@ -27,7 +28,6 @@ struct EventsView: View {
                 ForEach(allEvents, id: \.id) { event in
                     NavigationLink(destination: {
                         ScanView(eventId: event.id, eventTitle: event.title)
-                            .disabled(Date().timeIntervalSince1970 * 1000 >= Double(event.end_time))
                     }, label: {
                         HStack {
                             VStack(alignment: .leading) {
@@ -39,17 +39,19 @@ struct EventsView: View {
                             }
                         }
                     })
+                    .disabled(Date().timeIntervalSince1970 * 1000 >= Double(event.end_time))
                 }
                 .onDelete { indexSet in
                     lastDeletedIndex = Array(indexSet).max()
                     lastDeletedId = String(allEvents[lastDeletedIndex ?? 0].id)
+                    lastDeletedName = String(allEvents[lastDeletedIndex ?? 0].title)
                     showConfirmDialog = true
                 }
             }
             .navigationTitle("Admin Panel")
             .alert(isPresented: $showConfirmDialog) {
                 Alert(
-                    title: Text("Delete Event \(self.lastDeletedId)"),
+                    title: Text("Delete Event \(self.lastDeletedName) (ID \(self.lastDeletedId))"),
                     message: Text(
                         "are you sure you would like to delete this event? this action is irreversable."),
                     primaryButton: .destructive(Text("Delete")) {

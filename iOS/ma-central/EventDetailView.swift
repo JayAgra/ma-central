@@ -24,6 +24,7 @@ struct EventDetailView: View {
         GeometryReader { geometry in
         VStack {
             KFImage(URL(string: image == "" ? "https://jayagra.com/static-ish/IMG_6901.png?v=101" : image)!)
+                .alternativeSources([.network(URL(string: "https://jayagra.com/static-ish/IMG_6901.png?v=101")!)])
                 .resizable()
                 .aspectRatio(contentMode: .fit)
             VStack {

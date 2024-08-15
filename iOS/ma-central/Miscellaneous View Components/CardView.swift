@@ -40,6 +40,7 @@ struct CardView: View {
         if dimensions.x > dimensions.y {
             ZStack {
                 KFImage(URL(string: image == "" ? "https://jayagra.com/static-ish/IMG_6901.png?v=101" : image)!)
+                    .alternativeSources([.network(URL(string: "https://jayagra.com/static-ish/IMG_6901.png?v=101")!)])
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .cornerRadius(10)
