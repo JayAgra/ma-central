@@ -43,6 +43,7 @@ class AppState: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
+        request.cachePolicy = .reloadIgnoringLocalCacheData
         
         let requestTask = sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
             if let data = data {

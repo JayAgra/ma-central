@@ -66,9 +66,11 @@ struct EventsView: View {
                 }
             }
             .onAppear {
+                URLCache.shared.removeAllCachedResponses()
                 appState.refreshFutureEvents()
             }
             .refreshable {
+                URLCache.shared.removeAllCachedResponses()
                 appState.refreshFutureEvents()
             }
         }
