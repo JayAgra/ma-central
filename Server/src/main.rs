@@ -126,7 +126,7 @@ async fn board_get_lifetime_all(db: web::Data<Databases>, user: db_auth::User) -
 async fn events_get_all(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.data == "admin" {
         Ok(HttpResponse::Ok()
-            .insert_header(("Cache-Control", "max-age=150"))
+            .insert_header(("Cache-Control", "no-cache"))
             .json(db_main::execute_events(&db.main, db_main::EventQuery::GetAllEvents, 0).await?)
         )
     } else {
@@ -418,7 +418,7 @@ async fn main() -> io::Result<()> {
             )
             .service(
                 web::resource("/api/v1/auth/admin")
-                    .route(web::post().to(auth_get_admin)),
+                    .route(web::get().to(auth_get_admin)),
             )
             .service(
                 web::resource("/api/v1/board/lifetime/top")

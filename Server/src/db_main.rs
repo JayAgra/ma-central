@@ -190,12 +190,17 @@ pub async fn delete_event(pool: &Pool, params: String) -> Result<String, Error> 
 
 fn delete_event_sql(connection: Connection, params: String) -> Result<String, rusqlite::Error> {
     let stmt = connection.prepare("DELETE FROM events WHERE id=?1;")?;
-    execute_delete_event(stmt, params)
+    let stmt2 = connection.prepare("DELETE FROM tickets WHERE event_id=?1;")?;
+    execute_delete_event(stmt, stmt2, params)
 }
 
-fn execute_delete_event(mut statement: Statement, params: String) -> Result<String, rusqlite::Error> {
-    if statement.execute([params]).is_ok() {
-        Ok("{\"status\":200}".to_string())
+fn execute_delete_event(mut statement: Statement, mut statement_2: Statement, params: String) -> Result<String, rusqlite::Error> {
+    if statement.execute([params.clone()]).is_ok() {
+        if statement_2.execute([params]).is_ok() {
+            Ok("{\"status\":200}".to_string())
+        } else {
+            Err(rusqlite::Error::ExecuteReturnedResults)
+        }
     } else {
         Err(rusqlite::Error::ExecuteReturnedResults)
     }

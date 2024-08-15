@@ -36,6 +36,13 @@ struct SettingsView: View {
                         .foregroundColor(Color.pink)
                     }
                     Section {
+                        NavigationLink(destination: {
+                            ManageOptions()
+                        }, label: {
+                            Text("Additional Account Controls")
+                        })
+                    }
+                    Section {
                         Button("Delete Account") {
                             showConfirm = true
                         }

@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		F5032C1D2C485BD1006E1337 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5032C1C2C485BD1006E1337 /* LeaderboardView.swift */; };
+		F5063AA92C6D7F2200591010 /* ManageOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5063AA82C6D7F2200591010 /* ManageOptions.swift */; };
+		F5063AAF2C6D7FF500591010 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5063AAE2C6D7FF500591010 /* ScannerViewController.swift */; };
+		F5063AB02C6D7FF500591010 /* NewEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5063AAC2C6D7FF500591010 /* NewEvent.swift */; };
+		F5063AB12C6D7FF500591010 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5063AAD2C6D7FF500591010 /* ScanView.swift */; };
+		F5063AB22C6D7FF500591010 /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5063AAB2C6D7FF500591010 /* EventsView.swift */; };
 		F50918022C6D5588000A9BEC /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50918012C6D5588000A9BEC /* EventView.swift */; };
 		F50AD6AA2C06A55E00A15A2C /* ma_centralApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50AD6A92C06A55E00A15A2C /* ma_centralApp.swift */; };
 		F50AD6AC2C06A55E00A15A2C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50AD6AB2C06A55E00A15A2C /* HomeView.swift */; };
@@ -28,6 +33,11 @@
 
 /* Begin PBXFileReference section */
 		F5032C1C2C485BD1006E1337 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
+		F5063AA82C6D7F2200591010 /* ManageOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageOptions.swift; sourceTree = "<group>"; };
+		F5063AAB2C6D7FF500591010 /* EventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
+		F5063AAC2C6D7FF500591010 /* NewEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEvent.swift; sourceTree = "<group>"; };
+		F5063AAD2C6D7FF500591010 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		F5063AAE2C6D7FF500591010 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		F50918012C6D5588000A9BEC /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		F50AD6A62C06A55E00A15A2C /* ma-central.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ma-central.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F50AD6A92C06A55E00A15A2C /* ma_centralApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ma_centralApp.swift; sourceTree = "<group>"; };
@@ -60,6 +70,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F5063AAA2C6D7FE400591010 /* Admin */ = {
+			isa = PBXGroup;
+			children = (
+				F5063AAB2C6D7FF500591010 /* EventsView.swift */,
+				F5063AAC2C6D7FF500591010 /* NewEvent.swift */,
+				F5063AAD2C6D7FF500591010 /* ScanView.swift */,
+				F5063AAE2C6D7FF500591010 /* ScannerViewController.swift */,
+			);
+			path = Admin;
+			sourceTree = "<group>";
+		};
 		F50AD69D2C06A55E00A15A2C = {
 			isa = PBXGroup;
 			children = (
@@ -90,6 +111,8 @@
 				F5032C1C2C485BD1006E1337 /* LeaderboardView.swift */,
 				F5436F8C2C10E36000ED6D83 /* SettingsView.swift */,
 				F5436F882C10E31D00ED6D83 /* SettingsManager.swift */,
+				F5063AA82C6D7F2200591010 /* ManageOptions.swift */,
+				F5063AAA2C6D7FE400591010 /* Admin */,
 				F53785562C3F62560075EC49 /* Miscellaneous View Components */,
 				F5436F922C10E3AF00ED6D83 /* URLSessionConfiguration.swift */,
 				F50AD6AD2C06A55F00A15A2C /* Assets.xcassets */,
@@ -201,9 +224,14 @@
 				F53785542C3F60850075EC49 /* GuestAccessRestricted.swift in Sources */,
 				F5436F872C10E17A00ED6D83 /* AppState.swift in Sources */,
 				F53785522C3F60130075EC49 /* LoadingDataView.swift in Sources */,
+				F5063AAF2C6D7FF500591010 /* ScannerViewController.swift in Sources */,
+				F5063AB02C6D7FF500591010 /* NewEvent.swift in Sources */,
+				F5063AB12C6D7FF500591010 /* ScanView.swift in Sources */,
+				F5063AB22C6D7FF500591010 /* EventsView.swift in Sources */,
 				F5436F8D2C10E36000ED6D83 /* SettingsView.swift in Sources */,
 				F5A53FC02C40E89C006E4119 /* AddToWalletButton.swift in Sources */,
 				F50AD6AC2C06A55E00A15A2C /* HomeView.swift in Sources */,
+				F5063AA92C6D7F2200591010 /* ManageOptions.swift in Sources */,
 				F583965D2C1A0FFC0079E3C9 /* EventDetailView.swift in Sources */,
 				F50AD6AA2C06A55E00A15A2C /* ma_centralApp.swift in Sources */,
 				F5032C1D2C485BD1006E1337 /* LeaderboardView.swift in Sources */,
