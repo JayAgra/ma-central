@@ -189,7 +189,7 @@ pub async fn delete_event(pool: &Pool, params: String) -> Result<String, Error> 
 }
 
 fn delete_event_sql(connection: Connection, params: String) -> Result<String, rusqlite::Error> {
-    let stmt = connection.prepare("DELETE FROM users WHERE id=?1 AND score!=?2;")?;
+    let stmt = connection.prepare("DELETE FROM events WHERE id=?1;")?;
     execute_delete_event(stmt, params)
 }
 

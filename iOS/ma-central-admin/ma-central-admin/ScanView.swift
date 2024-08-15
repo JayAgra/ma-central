@@ -39,6 +39,7 @@ struct ScanView: View {
                         ProgressView()
                         Spacer()
                         Button("Cancel") {
+                            scannedValue = nil
                             resetScan = true
                             ticketOk = nil
                         }
@@ -49,6 +50,7 @@ struct ScanView: View {
                     .background(Color.black)
                     .onAppear() {
                         runTicket(ticket: scannedValue ?? "")
+                        scannedValue = nil
                     }
                 } else if ticketOk == true {
                     VStack {
@@ -57,6 +59,7 @@ struct ScanView: View {
                         Text("Ticket is valid")
                         Spacer()
                         Button("Continue") {
+                            scannedValue = nil
                             resetScan = true
                             ticketOk = nil
                         }
@@ -69,6 +72,7 @@ struct ScanView: View {
                     .onAppear() {
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            scannedValue = nil
                             resetScan = true
                             ticketOk = nil
                         }
@@ -80,6 +84,7 @@ struct ScanView: View {
                         Text("Ticket invalid")
                         Spacer()
                         Button("Continue") {
+                            scannedValue = nil
                             resetScan = true
                             ticketOk = nil
                         }
@@ -109,8 +114,6 @@ struct ScanView: View {
                 if httpResponse.statusCode == 200 {
                     completion(true)
                 } else {
-                    print(httpResponse.statusCode)
-                    print(attendee_id)
                     completion(false)
                 }
             } else {

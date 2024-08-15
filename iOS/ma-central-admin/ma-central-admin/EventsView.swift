@@ -65,6 +65,12 @@ struct EventsView: View {
                     })
                 }
             }
+            .onAppear {
+                appState.refreshFutureEvents()
+            }
+            .refreshable {
+                appState.refreshFutureEvents()
+            }
         }
     }
 }
