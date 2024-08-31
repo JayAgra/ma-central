@@ -47,6 +47,9 @@ struct EventsView: View {
                     lastDeletedName = String(allEvents[lastDeletedIndex ?? 0].title)
                     showConfirmDialog = true
                 }
+                Section {
+                    Text("Account Management (for the fucking narcs)")
+                }
             }
             .navigationTitle("Admin Panel")
             .alert(isPresented: $showConfirmDialog) {

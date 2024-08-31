@@ -91,6 +91,10 @@ struct LoginView: View {
                     Button("login") {
                         self.create = false
                     }
+                    .padding(.bottom)
+                    Text("Use of inappropriate usernames and/or inaccurate full names will result in administrative action and account deletion.")
+                        .padding(.all)
+                        .font(.caption)
                 }
             } else {
                 Spacer()
