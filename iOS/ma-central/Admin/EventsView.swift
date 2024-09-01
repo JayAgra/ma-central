@@ -48,7 +48,7 @@ struct EventsView: View {
                     showConfirmDialog = true
                 }
                 Section {
-                    Text("Account Management (for the fucking narcs)")
+                    Text("Account Management (narcs click here)")
                 }
             }
             .navigationTitle("Admin Panel")
