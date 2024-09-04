@@ -37,7 +37,12 @@ struct NewEvent: View {
             if status == nil {
                 Form {
                     Section {
-                        TextField("Event Title", text: $eventTitle)
+                        TextField("Event Title (22 char limit)", text: $eventTitle)
+                            .onChange(of: eventTitle) { title in
+                                if title.count > 22 {
+                                    eventTitle = String(eventTitle.prefix(22))
+                                }
+                            }
                         TextField("Event Description", text: $eventDescription)
                     }
                     Section {
@@ -76,6 +81,7 @@ struct NewEvent: View {
                                     eventRewardPoints = points
                                 }
                             }
+                            .keyboardType(.numberPad)
                     }
                     Button(action: {
                         self.status = 0

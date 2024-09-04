@@ -89,6 +89,61 @@ pub fn generate_pass_json(ticket: db_main::Ticket, event: db_main::Event, user: 
     )
 }
 
-// pub fn generate_id_json(ticket: db_main::Ticket, event: db_main::Event, user: db_auth::User) -> Value {
-    
-// }
+pub fn generate_id_json(user: db_auth::User) -> Value {
+    json!(
+        {
+            "formatVersion": 1,
+            "passTypeIdentifier": "pass.com.jayagra.ma-central",
+            "serialNumber": format!("{}{}", user.student_id, user.id),
+            "teamIdentifier": "D6MFYYVHA8",
+            "barcode": {
+                "message": format!("{}", user.student_id),
+                "format": "PKBarcodeFormatPDF417",
+                "messageEncoding": "iso-8859-1"
+            },
+            "organizationName": "Jayen Agrawal",
+            "description": "Menlo-Atherton High School ID",
+            "foregroundColor": "rgb(255, 255, 255)",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "associatedStoreIdentifiers": [6503323934 as i64],
+            "eventTicket": {
+                "primaryFields": [
+                    {
+                        "key": "username",
+                        "label": "USERNAME",
+                        "value": format!("{}", user.username)
+                    }
+                ],
+                "secondaryFields": [
+                    {
+                        "key": "full_name",
+                        "label": "FULL NAME",
+                        "value": format!("{}", user.full_name)
+                    }
+                ],
+                "backFields": [
+                    {
+                        "key": "id_dum",
+                        "label": "Student ID Number",
+                        "value": format!("{}", user.student_id)
+                    },
+                    {
+                        "key": "acct_id",
+                        "label": "Account ID",
+                        "value": format!("{}", user.id)
+                    },
+                    {
+                        "key": "issued",
+                        "label": "Issuer",
+                        "value": "Jayen Agrawal (D6MFYYVHA8)"
+                    },
+                    {
+                        "key": "disclaimer",
+                        "label": "Disclaimer",
+                        "value": "This card is not issued as a proof of identity and is comprised solely of user-provided information."
+                    }
+                ]
+            }
+        }
+    )
+}

@@ -92,7 +92,7 @@ struct LoginView: View {
                         self.create = false
                     }
                     .padding(.bottom)
-                    Text("Use of inappropriate usernames and/or inaccurate full names will result in administrative action and account deletion.")
+                    Text("Use of inappropriate usernames and/or inaccurate full names will result in administrative action and account deletion. Contact dev@jayagra.com for login help.")
                         .padding(.all)
                         .font(.caption)
                 }
@@ -149,6 +149,8 @@ struct LoginView: View {
                                 } else if httpResponse.statusCode == 413 {
                                     alertMessage =
                                     "your username, full name, and/or password were not between 3 and 64 characters (8 min for password)"
+                                } else if httpResponse.statusCode == 451 {
+                                    alertMessage = "an account already exists for the supplied student id. to delete your old account, send an email to dev@jayagra.com."
                                 } else {
                                     alertMessage = "creation failed"
                                 }

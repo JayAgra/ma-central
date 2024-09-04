@@ -15,13 +15,15 @@ struct CardView: View {
     var location: String
     var dimensions: CGPoint
     var humanDate: String
+    var points: Int
     
-    init(image: String, date: String, title: String, location: String, dimensions: CGPoint) {
+    init(image: String, date: String, title: String, location: String, dimensions: CGPoint, points: Int) {
         self.image = image
         self.date = date
         self.title = title
         self.location = location
         self.dimensions = dimensions
+        self.points = points
         
         if let unixTimestampMillis = Double(date) {
             let unixTimestampSeconds = unixTimestampMillis / 1000
@@ -38,7 +40,6 @@ struct CardView: View {
     
     var body: some View {
         if dimensions.x > dimensions.y {
-            ZStack {
                 KFImage(URL(string: image == "" ? "https://jayagra.com/static-ish/IMG_6901.png?v=101" : image)!)
                     .alternativeSources([.network(URL(string: "https://jayagra.com/static-ish/IMG_6901.png?v=101")!)])
                     .resizable()
@@ -46,25 +47,28 @@ struct CardView: View {
                     .cornerRadius(10)
                     .frame(width: dimensions.x, height: dimensions.y)
                     .padding()
-                VStack(alignment: .leading) {
-                    Text(humanDate)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .shadow(color: .secondary, radius: 4, x: 0, y: 2)
-                    Text(title)
-                        .font(.title)
-                        .fontWeight(.black)
-                        .lineLimit(3)
-                        .foregroundColor(.white)
-                        .shadow(color: .secondary, radius: 4, x: 0, y: 2)
-                    Text(location.uppercased())
-                        .font(.caption)
-                        .foregroundColor(.white)
-                        .shadow(color: .secondary, radius: 4, x: 0, y: 2)
-                }
-                .frame(width: dimensions.x, height: dimensions.y, alignment: .leading)
-                .padding(.leading, dimensions.x * 0.1)
-            }
+                    .overlay(
+                        VStack(alignment: .leading) {
+                            VStack(alignment: .leading) {
+                                Text(humanDate)
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                Text(title)
+                                    .font(.title)
+                                    .fontWeight(.black)
+                                    .lineLimit(3)
+                                    .foregroundColor(.white)
+                                Text(location.uppercased() + " • " + String(points) + " POINTS")
+                                    .font(.caption)
+                                    .foregroundColor(.white)
+                            }
+                            .padding(5)
+                            .cornerRadius(10)
+                            .background(Color.black.opacity(0.7))
+                        }
+                        .frame(width: dimensions.x, height: dimensions.y, alignment: .leading)
+                        .padding(.leading, dimensions.x * 0.1)
+                    )
         } else {
             VStack {
                 KFImage(URL(string: image == "" ? "https://jayagra.com/static-ish/IMG_6901.png?v=101" : image)!)
@@ -101,5 +105,5 @@ struct CardView: View {
 }
 
 #Preview {
-    CardView(image: "ImagePlaceholder", date: "Jan 1, 1970", title: "Event Title", location: "Event Location", dimensions: CGPoint(x: 325, y: 275))
+    CardView(image: "ImagePlaceholder", date: "Jan 1, 1970", title: "Event Title", location: "Event Location", dimensions: CGPoint(x: 325, y: 275), points: 444429)
 }

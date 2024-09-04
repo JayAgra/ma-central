@@ -45,27 +45,35 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
                 .body("{\"status\": \"username_taken\"}");
         } else {
             drop(target_user_temp);
-            // insert into database
-            let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(
-                pool,
-                create_form.student_id.clone(),
-                create_form.full_name.clone(),
-                create_form.username.clone(),
-                create_form.password.clone(),
-            )
-            .await;
-            // send final success/failure for creation
-            if user_temp.is_err() {
+            let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_student_id(pool, create_form.student_id.clone()).await;
+            if target_user_temp.is_ok() {
                 return HttpResponse::BadRequest()
-                    .status(StatusCode::from_u16(500).unwrap())
+                    .status(StatusCode::from_u16(451).unwrap()) // horrible abuse of 451 😭
                     .insert_header(("Cache-Control", "no-cache"))
-                    .body("{\"status\": \"creation_error\"}");
+                    .body("{\"status\": \"student_id_taken\"}");
             } else {
-                drop(user_temp);
-                return HttpResponse::Ok()
-                    .status(StatusCode::from_u16(200).unwrap())
-                    .insert_header(("Cache-Control", "no-cache"))
-                    .body("{\"status\": \"success\"}");
+                // insert into database
+                let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(
+                    pool,
+                    create_form.student_id.clone(),
+                    create_form.full_name.clone(),
+                    create_form.username.clone(),
+                    create_form.password.clone(),
+                )
+                .await;
+                // send final success/failure for creation
+                if user_temp.is_err() {
+                    return HttpResponse::BadRequest()
+                        .status(StatusCode::from_u16(500).unwrap())
+                        .insert_header(("Cache-Control", "no-cache"))
+                        .body("{\"status\": \"creation_error\"}");
+                } else {
+                    drop(user_temp);
+                    return HttpResponse::Ok()
+                        .status(StatusCode::from_u16(200).unwrap())
+                        .insert_header(("Cache-Control", "no-cache"))
+                        .body("{\"status\": \"success\"}");
+                }
             }
         }
     } else {

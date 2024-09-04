@@ -10,7 +10,6 @@ import PassKit
 
 struct AddToWalletButton: UIViewRepresentable {
     @Binding var isLoading: Bool
-    let passId: Int
     
     func makeUIView(context: Context) -> PKAddPassButton {
         let button = PKAddPassButton(addPassButtonStyle: .black)
@@ -32,28 +31,26 @@ struct AddToWalletButton: UIViewRepresentable {
 
     class Coordinator: NSObject {
         var parent: AddToWalletButton
-        let passId_: Int
         
         init(_ parent: AddToWalletButton) {
             self.parent = parent
-            self.passId_ = parent.passId
         }
 
         @objc func addPass() {
             self.parent.isLoading = true
-            guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/ticketing/pkpass/\(passId_)") else {
+            guard let url = URL(string: "https://macsvc.jayagra.com/api/v1/user/get_user_id/pkpass") else {
                 return
             }
 
             let task = URLSession.shared.downloadTask(with: url) { localURL, response, error in
                 if let error = error {
-                    print("Failed to download PKPass: \(error)")
+                    print("Failed to download PKPASS: \(error)")
                     self.parent.isLoading = false
                     return
                 }
 
                 guard let localURL = localURL else {
-                    print("Failed to download PKPass: No local URL returned")
+                    print("Failed to download PKPASS: No local URL returned")
                     self.parent.isLoading = false
                     return
                 }
@@ -66,7 +63,7 @@ struct AddToWalletButton: UIViewRepresentable {
                     }
                     self.parent.isLoading = false
                 } catch {
-                    print("Failed to read PKPass file: \(error)")
+                    print("Failed to read PKPASS file: \(error)")
                     self.parent.isLoading = false
                 }
             }

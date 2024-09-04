@@ -11,6 +11,7 @@ struct SettingsView: View {
     @State private var showConfirm = false
     @State private var deletionData: (String, String) = ("", "")
     @EnvironmentObject var appState: AppState
+    @State private var isLoadingPass = false
     
     var body: some View {
         NavigationView {
@@ -34,6 +35,20 @@ struct SettingsView: View {
                             }
                         }
                         .foregroundColor(Color.pink)
+                    }
+                    if !appState.currentUser.isEmpty && appState.currentUser[0].id != 0 {
+                        Section {
+                            ZStack {
+                                VStack(alignment: .center) {
+                                    Text("Add Student ID to Wallet")
+                                    AddToWalletButton(isLoading: $isLoadingPass)
+                                        .frame(maxWidth: .infinity, maxHeight: 50)
+                                }
+                                if isLoadingPass {
+                                    ProgressView()
+                                }
+                            }
+                        }
                     }
                     Section {
                         NavigationLink(destination: {

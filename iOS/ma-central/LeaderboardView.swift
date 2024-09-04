@@ -12,12 +12,35 @@ struct LeaderboardView: View {
     
     var body: some View {
         List {
-            ForEach(leaderboard, id: \.id) { user in
-                HStack {
-                    Text(String(user.username))
-                    Spacer()
-                    Text(String(user.lifetime))
-                        .font(.headline)
+            if leaderboard.count > 2 {
+                Section {
+                    HStack {
+                        Label("1", systemImage: "trophy.fill").labelStyle(.iconOnly).foregroundStyle(Color.yellow).padding(.trailing)
+                        Text(String(leaderboard[0].username))
+                        Spacer()
+                        Text(String(leaderboard[0].lifetime))
+                    }
+                    HStack {
+                        Label("2", systemImage: "trophy.fill").labelStyle(.iconOnly).foregroundStyle(Color.gray).padding(.trailing)
+                        Text(String(leaderboard[1].username))
+                        Spacer()
+                        Text(String(leaderboard[1].lifetime))
+                    }
+                    HStack {
+                        Label("3", systemImage: "trophy.fill").labelStyle(.iconOnly).foregroundStyle(Color(red: 0.6392, green: 0.2824, blue: 0.1529)).padding(.trailing)
+                        Text(String(leaderboard[2].username))
+                        Spacer()
+                        Text(String(leaderboard[2].lifetime))
+                    }
+                }
+            }
+            Section {
+                ForEach(leaderboard, id: \.id) { user in
+                    HStack {
+                        Text(String(user.username))
+                        Spacer()
+                        Text(String(user.lifetime))
+                    }
                 }
             }
         }

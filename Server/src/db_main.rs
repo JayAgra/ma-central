@@ -55,7 +55,7 @@ fn get_all_events(conn: Connection) -> Result<Vec<Event>, rusqlite::Error> {
 }
 
 fn get_future_events(conn: Connection, unix_time: u128) -> Result<Vec<Event>, rusqlite::Error> {
-    let stmt = conn.prepare(format!("SELECT * FROM events WHERE start_time > {} ORDER BY start_time DESC;", unix_time).as_str())?;
+    let stmt = conn.prepare(format!("SELECT * FROM events WHERE end_time > {} ORDER BY start_time DESC;", unix_time).as_str())?;
     get_event_rows(stmt)
 }
 

@@ -15,7 +15,7 @@ use openssl::{
     hash::MessageDigest,
     pkcs7::Pkcs7Flags,
     pkcs12::Pkcs12,
-    stack::Stack,
+    stack::Stack, sign,
 };
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use serde::{Deserialize, Serialize};
@@ -228,6 +228,33 @@ async fn tickets_generate_pass(req: HttpRequest, db: web::Data<Databases>, user:
             .content_type(ContentType::json())
             .body("{\"status\": \"invalid_id\"}")
     }
+}
+
+async fn user_generate_pass(user: db_auth::User) -> impl Responder {
+    let pass_dir = tempdir().expect("tmp dir creation failure");
+    let pass_dir_path = pass_dir.path().to_owned();
+    let pass_json = pass::generate_id_json(user);
+    // write pass data
+    fs::write(pass_dir_path.join("pass.json"), &pass_json.to_string()).expect("failed to write pass");
+    // copy images
+    let _ = fs::copy("./passes/background@2x.png", pass_dir_path.join("background@2x.png"));
+    let _ = fs::copy("./passes/icon@2x.png", pass_dir_path.join("icon@2x.png"));
+    let _ = fs::copy("./passes/logo@2x.png", pass_dir_path.join("logo@2x.png"));
+    // make manifest
+    let manifest_json = json!({
+        "pass.json": calculate_hash(pass_dir_path.join("pass.json")),
+        "background@2x.png": calculate_hash(pass_dir_path.join("background@2x.png")),
+        "icon@2x.png": calculate_hash(pass_dir_path.join("icon@2x.png")),
+        "logo@2x.png": calculate_hash(pass_dir_path.join("logo@2x.png")),
+    });
+    fs::write(pass_dir_path.join("manifest.json"), manifest_json.to_string()).expect("failed to write manifest");
+    let _ = sign_pass(&pass_dir_path);
+    let output_dir = tempdir().expect("could not create dir for pass");
+    let pkpass_path = package_pass(&pass_dir_path, output_dir.path().to_path_buf());
+    let pkpass_bytes = fs::read(pkpass_path).expect("Failed to read .pkpass file");
+    HttpResponse::Ok()
+        .content_type("application/vnd.apple.pkpass")
+        .body(pkpass_bytes)
 }
 
 // part of pass creation
@@ -447,6 +474,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/ticketing/pkpass/{ticket_id}")
                     .route(web::get().to(tickets_generate_pass)),
+            )
+            .service(
+                web::resource("/api/v1/user/get_user_id/pkpass")
+                    .route(web::get().to(user_generate_pass)),
             )
             .service(
                 web::resource("/api/v1/manage/events/delete/{event_id}")

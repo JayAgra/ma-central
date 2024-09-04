@@ -47,11 +47,11 @@ struct HomeView: View {
                         LoadingDataView(message: "loading account data")
                     }
                     VStack {
-                        ForEach(appState.futureEvents.prefix(2), id: \.id) { event in
+                        ForEach(appState.futureEvents.prefix(4), id: \.id) { event in
                             NavigationLink(destination: {
                                 EventDetailView(event_id: event.id, image: event.image, date: dateFormatter.string(from: Date(timeIntervalSince1970: Double(event.start_time) / 1000)), title: event.title, location: event.human_location, latitude: event.latitude, longitude: event.longitude, details: event.details, pointReward: event.point_reward)
                             }, label: {
-                                CardView(image: event.image, date: String(event.start_time), title: event.title, location: event.human_location, dimensions: CGPoint(x: geometry.size.width * 0.9, y: geometry.size.width * 0.45))
+                                CardView(image: event.image, date: String(event.start_time), title: event.title, location: event.human_location, dimensions: CGPoint(x: geometry.size.width * 0.9, y: geometry.size.width * 0.45), points: event.point_reward)
                             })
                         }
                     }
