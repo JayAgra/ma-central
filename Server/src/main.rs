@@ -18,6 +18,7 @@ use openssl::{
     stack::Stack,
 };
 use r2d2_sqlite::{self, SqliteConnectionManager};
+use regex::Regex;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -327,28 +328,56 @@ async fn manage_create_event(data: web::Json<db_main::EventCreateData>, db: web:
     }
 }
 
+#[derive(Deserialize)]
+struct IncomingChatGptRequest {
+    prompt: String
+}
+
 // ChatGPT API forwarding
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
 struct ChatGptRequest {
     model: String,
     messages: Vec<Message>,
 }
 
-#[derive(Serialize, Deserialize)]
+impl ChatGptRequest {
+    pub fn new(model: String, messages: Vec<Message>) -> Self {
+        Self { model, messages }
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone)]
 struct Message {
     role: String,
     content: String,
 }
 
-async fn chatgpt_handler(req: web::Json<ChatGptRequest>) -> HttpResponse {
+impl Message {
+    pub fn new(role: String, content: String) -> Self {
+        Self { role, content }
+    }
+}
+
+async fn chatgpt_handler(req: web::Json<IncomingChatGptRequest>) -> HttpResponse {
     let client = Client::new();
     let api_key = env::var("OPENAI_API_KEY").expect("API key not set");
+
+    let re = Regex::new("([\"'`\\[\\]{}()<>])").unwrap();
+
+    let fixed: String = re.replace_all(req.prompt.as_str(), |caps: &regex::Captures| {
+        format!("\\{}", &caps[0])
+    }).into_owned();
+
+    let full_prompt = format!(
+        "You are advising a student from Menlo-Atherton High School about the schools mental health resources. The school offers a variety of mental health services:\n\nPAWS (Peace & Wellness Space): Open from 9am to 3pm, Monday through Friday (except on government holidays). PAWS provides mental health, substance misuse, and overall wellness services through partnerships with Star Vista, Miricenter, and Acknowledge Alliance. Students can drop in for crisis intervention, wellness check-ins, or to practice coping strategies. They can refer themselves or a friend by scanning QR codes posted on campus in English and Spanish.\n\nCounselors & Appointments: The school has counselors available by appointment via the counseling tab on www.mabears.org. For 504 plan support, students can reach out to Intervention Counselors Kerry Larratt (A-L) or Andrea Booth (M-Z) for personalized assistance.\n\nMental Health Resources:\n\nCare Solace: Offers 24/7/365 support to connect students and families to treatment providers anonymously, available at Care Solace website or by calling 1-855-515-0595. Services are available in 200+ languages and accommodate all types of insurance or no insurance.\nStar Vista S.O.S. Team: Provides crisis intervention for youth and can be accessed at 1-650-579-0350.\nKara Grief Services: Offers grief support for those dealing with loss, available at 1-650-321-5272 or at Kara Grief website.\nAlternative Testing Setting: Available for students requiring accommodations for testing (D-24), including extended time as indicated in 504 or IEP plans.\n\nHotlines & Immediate Support:\n\nSuicide and Crisis Lifeline: Call 988 or text \"Help\" to 988.\nCA Youth Crisis Line: Call 1-800-843-5200.\nTrevor Project LGBTQ+ Lifeline: Call 1-866-488-7386 or text \"START\" to 678678.\nThe students question is: \"{}\". Provide a response that is specific, empathetic, and relevant to the question asked, and only offer information that pertains to Menlo-Athertons mental health resources. Make the response sound as human and compassionate as possible, acknowledging the students concern or problem.",
+        fixed
+    );
 
     let response = client
         .post("https://api.openai.com/v1/chat/completions")
         .bearer_auth(api_key)
-        .json(&*req)
+        .json(&ChatGptRequest::new("gpt-4o-mini".to_string(), [Message::new("user".to_string(), full_prompt)].to_vec()))
         .send()
         .await;
 
