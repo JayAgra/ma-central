@@ -18,6 +18,7 @@ use openssl::{
     stack::Stack, sign,
 };
 use r2d2_sqlite::{self, SqliteConnectionManager};
+use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock, time::{SystemTime, UNIX_EPOCH}, path::PathBuf};
@@ -326,6 +327,46 @@ async fn manage_create_event(data: web::Json<db_main::EventCreateData>, db: web:
     }
 }
 
+// ChatGPT API forwarding
+
+#[derive(Serialize, Deserialize)]
+struct ChatGptRequest {
+    model: String,
+    messages: Vec<Message>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Message {
+    role: String,
+    content: String,
+}
+
+async fn chatgpt_handler(req: web::Json<ChatGptRequest>) -> HttpResponse {
+    let client = Client::new();
+    let api_key = env::var("OPENAI_API_KEY").expect("API key not set");
+
+    let response = client
+        .post("https://api.openai.com/v1/chat/completions")
+        .bearer_auth(api_key)
+        .json(&*req)
+        .send()
+        .await;
+
+    match response {
+        Ok(res) => {
+            if res.status().is_success() {
+                let body = res.json::<serde_json::Value>().await.unwrap();
+                HttpResponse::Ok().json(body)
+            } else {
+                HttpResponse::BadRequest().body(res.text().await.unwrap())
+            }
+        }
+        Err(err) => {
+            HttpResponse::InternalServerError().body(err.to_string())
+        }
+    }
+}
+
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.ma-central\", \"D6MFYYVHA8.com.jayagra.ma-central-admin\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
@@ -364,7 +405,7 @@ async fn main() -> io::Result<()> {
         .unwrap();
 
     /*
-     *  generate a self-signed certificate for localhost (run from bearTracks directory):
+     *  generate a self-signed certificate for localhost (run from macsvc directory):
      *  openssl req -x509 -newkey rsa:4096 -nodes -keyout ./ssl/key.pem -out ./ssl/cert.pem -days 365 -subj '/CN=localhost'
      */
     // create ssl builder for tls config
@@ -390,7 +431,7 @@ async fn main() -> io::Result<()> {
             // ident service
             .wrap(IdentityService::new(
                 CookieIdentityPolicy::new(&[0; 32])
-                    .name("bear_tracks")
+                    .name("ma_central")
                     .max_age_secs(actix_web::cookie::time::Duration::weeks(2).whole_seconds())
                     .secure(false),
             ))
@@ -399,7 +440,7 @@ async fn main() -> io::Result<()> {
             // session middleware
             .wrap(
                 SessionMiddleware::builder(session::MemorySession, secret_key.clone())
-                    .cookie_name("bear_tracks-ms".to_string())
+                    .cookie_name("ma_central-ms".to_string())
                     .cookie_http_only(true)
                     .cookie_secure(false)
                     .session_lifecycle(
@@ -412,7 +453,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=23328000"))
-                    .add(("X-macsvc", "1.0.0")),
+                    .add(("X-macsvc", "1.1.3")),
             )
             .service(
                 web::resource("/apple-app-site-association")
@@ -486,6 +527,9 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/manage/events/create")
                     .route(web::post().to(manage_create_event)),
+            )
+            .route(
+                "/api/chatgpt", web::post().to(chatgpt_handler)
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
