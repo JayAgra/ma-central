@@ -15,7 +15,7 @@ use openssl::{
     hash::MessageDigest,
     pkcs7::Pkcs7Flags,
     pkcs12::Pkcs12,
-    stack::Stack, sign,
+    stack::Stack,
 };
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest::Client;

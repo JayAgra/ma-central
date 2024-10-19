@@ -2,7 +2,7 @@
 *.pem
 *.key
 *.p12
-
+Server/.env
 
 #
 #

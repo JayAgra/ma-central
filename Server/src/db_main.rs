@@ -157,7 +157,7 @@ fn get_ticket_sql(conn: Connection, event_id: i64, user_id: i64, creation_date: 
     ])?;
     Ok(Ticket { id: ticket_id, event_id, holder_id: user_id, creation_date: creation_date as i64 })
 }
-
+/*
 pub async fn expend_ticket(pool: &Pool, ticket_id: String) -> Result<bool, Error> {
     let pool = pool.clone();
     
@@ -175,6 +175,7 @@ fn expend_ticket_sql(conn: Connection, ticket_id: String) -> Result<bool, rusqli
     stmt.execute(params![ticket_id])?;
     Ok(true)
 }
+*/
 
 pub async fn delete_event(pool: &Pool, params: String) -> Result<String, Error> {
     let pool = pool.clone();

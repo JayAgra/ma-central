@@ -26,7 +26,7 @@ type PointQueryResult = Result<Vec<UserPoints>, rusqlite::Error>;
 
 pub enum AuthData {
     GetUserScores,
-    GetUserScoresTop,
+    /* GetUserScoresTop, */
     GetCurrentUserScore,
 }
 
@@ -38,7 +38,7 @@ pub async fn execute_scores(pool: &Pool, query: AuthData, user_id: i64) -> Resul
     web::block(move || {
         match query {
             AuthData::GetUserScores => get_user_scores(conn),
-            AuthData::GetUserScoresTop => get_user_scores_top(conn),
+            /* AuthData::GetUserScoresTop => get_user_scores_top(conn), */
             AuthData::GetCurrentUserScore => get_current_user_score(conn, user_id)
         }
     })
@@ -51,10 +51,12 @@ fn get_user_scores(conn: Connection) -> PointQueryResult {
     get_score_rows(stmt)
 }
 
+/*
 fn get_user_scores_top(conn: Connection) -> PointQueryResult {
     let stmt = conn.prepare("SELECT id, username, lifetime, score FROM users ORDER BY lifetime DESC LIMIT 10;")?;
     get_score_rows(stmt)
 }
+*/
 
 fn get_current_user_score(conn: Connection, user_id: i64) -> PointQueryResult {
     let stmt = conn.prepare(format!("SELECT id, username, lifetime, score FROM users WHERE id={};", user_id).as_str())?;
@@ -86,6 +88,7 @@ pub struct User {
     pub data: String,
 }
 
+/*
 pub async fn get_user_id(pool: &Pool, id: String) -> Result<User, Error> {
     let pool = pool.clone();
 
@@ -111,6 +114,7 @@ fn get_user_id_entry(conn: Connection, id: String) -> Result<User, rusqlite::Err
         })
     })
 }
+*/
 
 pub async fn get_user_username(pool: &Pool, username: String) -> Result<User, Error> {
     let pool = pool.clone();
