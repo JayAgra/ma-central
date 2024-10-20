@@ -15,52 +15,149 @@ struct ChatbotView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
+            ScrollView {
                 if answerStatus == 0 {
-                    Text("Welcome to M-A's mental health resources chatbot! Enter your question below, and we'll do our best to help you find the right resources. All questions are anonymous and are never stored")
-                } else {
+                    Text("Welcome to M-A's mental health resources chatbot! All questions are anonymous and are never stored")
+                    Spacer()
                     VStack {
-                        Spacer()
-                        VStack(alignment: .leading) {
-                            Text(promptText)
+                        TextField("Enter your question...", text: $promptText)
+                            .onSubmit {
+                                askQuestion()
+                            }
+                            .textInputAutocapitalization(.sentences)
+                            .autocorrectionDisabled(false)
+                            .frame(maxWidth: .infinity, alignment: .topLeading)
+                            .padding()
+                    }
+                    .background(Color.gray.opacity(0.15))
+                    .cornerRadius(10)
+                    .padding()
+                    Spacer()
+                    Button(action: {
+                        askQuestion()
+                    }, label: {
+                        Label("Continue", systemImage: "arrow.forward.circle.fill")
+                            .labelStyle(.titleOnly)
+                    })
+                    .buttonStyle(.bordered)
+                    .padding()
+                } else {
+                    Spacer()
+                    VStack(alignment: .leading) {
+                        Text(promptText)
+                            .frame(maxWidth: .infinity, alignment: .topLeading)
+                            .padding()
+                    }
+                    .background(Color.gray.opacity(0.25))
+                    .cornerRadius(10)
+                    .padding()
+                    VStack {
+                        if answerStatus == 1 {
+                            ProgressView()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding()
+                        } else {
+                            Text(responseText)
                                 .frame(maxWidth: .infinity, alignment: .topLeading)
                                 .padding()
                         }
-                        .background(Color.gray.opacity(0.25))
-                        .cornerRadius(10)
+                    }
+                    .background(Color.accentColor.opacity(0.15))
+                    .cornerRadius(10)
+                    .padding()
+                    Spacer()
+                    VStack {
+                        Button(action: {
+                            self.promptText = ""
+                            self.responseText = ""
+                            self.answerStatus = 0
+                        }, label: {
+                            Label("Ask a new question", systemImage: "questionmark")
+                                .labelStyle(.titleOnly)
+                        })
+                        .buttonStyle(.bordered)
                         .padding()
-                        VStack {
-                            if answerStatus == 1 {
-                                ProgressView()
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                                    .padding()
-                            } else {
-                                Text("")
-                                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                                    .padding()
-                            }
-                        }
-                        .background(Color.accentColor.opacity(0.075))
-                        .cornerRadius(10)
-                        .padding()
-                        Spacer()
-                        VStack {
-                            Button(action: {
-                                self.answerStatus = 0
-                            }, label: {
-                                Label("Ask a new question", systemImage: "questionmark")
-                                    .labelStyle(.titleOnly)
-                            })
-                            .buttonStyle(.borderedProminent)
-                        }
                     }
                 }
             }
-            .navigationTitle("Resources Chatbot")
+            .navigationTitle("Chatbot")
+        }
+    }
+    
+    func askQuestion() {
+        answerStatus = 1
+        guard let url = URL(string: "https://macsvc.jayagra.com/api/chatgpt") else { return }
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: ["prompt": promptText])
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpShouldHandleCookies = true
+            request.httpBody = jsonData
+            sharedSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+                if let data = data {
+                    do {
+                        let decoder = JSONDecoder()
+                        let result = try decoder.decode(GptApiResponse.self, from: data)
+                        DispatchQueue.main.async {
+                            responseText = result.choices.first?.message.content ?? "The chatbot sent an invalid response, which may have been empty."
+                            answerStatus = 2
+                        }
+                    } catch {
+                        responseText = "There was an error decoding the chatbot's response. \(error)"
+                        answerStatus = 2
+                    }
+                } else {
+                    responseText = "There was an error with the chatbot's response."
+                    answerStatus = 2
+                }
+            }
+            .resume()
+        } catch {
+            responseText = "There was an error encoding your response."
+            answerStatus = 2
         }
     }
 }
 
 #Preview {
     ChatbotView()
+}
+
+struct GptApiResponse: Codable {
+    let choices: [GpiApiResponseChoice]
+    let created: Int
+    let id: String
+    let model: String
+    let system_fingerprint: String
+    let usage: GptApiResponseUsage
+}
+
+struct GpiApiResponseChoice: Codable {
+    let finish_reason: String
+    let index: Int
+    let logprobs: String?
+    let message: GptApiResponseChoiceMessage
+}
+
+struct GptApiResponseChoiceMessage: Codable {
+    let content: String
+    let refusal: String?
+    let role: String
+}
+
+struct GptApiResponseUsage: Codable {
+    let completion_tokens: Int
+    let completion_tokens_details: GptApiResponseUsageCompletion
+    let prompt_tokens: Int
+    let prompt_tokens_details: GptApiResponseUsagePrompt
+    let total_tokens: Int
+}
+
+struct GptApiResponseUsageCompletion: Codable {
+    let reasoning_tokens: Int
+}
+
+struct GptApiResponseUsagePrompt: Codable {
+    let cached_tokens: Int
 }
