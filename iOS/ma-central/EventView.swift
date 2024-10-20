@@ -10,7 +10,7 @@ import SwiftUI
 struct EventView: View {
     @EnvironmentObject var appState: AppState
     var dateFormatter = DateFormatter()
-    @State private var searchText: String = ""
+    @State private var searchText: String = "" 
     
     init() {
         dateFormatter.dateStyle = .medium

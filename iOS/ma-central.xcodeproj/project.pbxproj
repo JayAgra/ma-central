@@ -13,6 +13,7 @@
 		F5063AB02C6D7FF500591010 /* NewEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5063AAC2C6D7FF500591010 /* NewEvent.swift */; };
 		F5063AB12C6D7FF500591010 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5063AAD2C6D7FF500591010 /* ScanView.swift */; };
 		F5063AB22C6D7FF500591010 /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5063AAB2C6D7FF500591010 /* EventsView.swift */; };
+		F506B50C2CC49C5500CA1690 /* ResourcesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F506B50B2CC49C5500CA1690 /* ResourcesView.swift */; };
 		F50918022C6D5588000A9BEC /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50918012C6D5588000A9BEC /* EventView.swift */; };
 		F50AD6AA2C06A55E00A15A2C /* ma_centralApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50AD6A92C06A55E00A15A2C /* ma_centralApp.swift */; };
 		F50AD6AC2C06A55E00A15A2C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50AD6AB2C06A55E00A15A2C /* HomeView.swift */; };
@@ -29,6 +30,7 @@
 		F583965D2C1A0FFC0079E3C9 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */; };
 		F5932B562C194EDB007D0C18 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5932B552C194EDB007D0C18 /* CardView.swift */; };
 		F5A53FC02C40E89C006E4119 /* AddToWalletButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A53FBF2C40E89C006E4119 /* AddToWalletButton.swift */; };
+		F5B549F62CC5946E00DC33F9 /* ChatbotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B549F52CC5946E00DC33F9 /* ChatbotView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,7 @@
 		F5063AAC2C6D7FF500591010 /* NewEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEvent.swift; sourceTree = "<group>"; };
 		F5063AAD2C6D7FF500591010 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		F5063AAE2C6D7FF500591010 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
+		F506B50B2CC49C5500CA1690 /* ResourcesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesView.swift; sourceTree = "<group>"; };
 		F50918012C6D5588000A9BEC /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		F50AD6A62C06A55E00A15A2C /* ma-central.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ma-central.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F50AD6A92C06A55E00A15A2C /* ma_centralApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ma_centralApp.swift; sourceTree = "<group>"; };
@@ -56,6 +59,7 @@
 		F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		F5932B552C194EDB007D0C18 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		F5A53FBF2C40E89C006E4119 /* AddToWalletButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToWalletButton.swift; sourceTree = "<group>"; };
+		F5B549F52CC5946E00DC33F9 /* ChatbotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatbotView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +112,8 @@
 				F50AD6AB2C06A55E00A15A2C /* HomeView.swift */,
 				F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */,
 				F50918012C6D5588000A9BEC /* EventView.swift */,
+				F506B50B2CC49C5500CA1690 /* ResourcesView.swift */,
+				F5B549F52CC5946E00DC33F9 /* ChatbotView.swift */,
 				F5032C1C2C485BD1006E1337 /* LeaderboardView.swift */,
 				F5436F8C2C10E36000ED6D83 /* SettingsView.swift */,
 				F5436F882C10E31D00ED6D83 /* SettingsManager.swift */,
@@ -216,10 +222,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F506B50C2CC49C5500CA1690 /* ResourcesView.swift in Sources */,
 				F50918022C6D5588000A9BEC /* EventView.swift in Sources */,
 				F5436F932C10E3AF00ED6D83 /* URLSessionConfiguration.swift in Sources */,
 				F5436F892C10E31D00ED6D83 /* SettingsManager.swift in Sources */,
 				F5436F8F2C10E38600ED6D83 /* LoginView.swift in Sources */,
+				F5B549F62CC5946E00DC33F9 /* ChatbotView.swift in Sources */,
 				F5932B562C194EDB007D0C18 /* CardView.swift in Sources */,
 				F53785542C3F60850075EC49 /* GuestAccessRestricted.swift in Sources */,
 				F5436F872C10E17A00ED6D83 /* AppState.swift in Sources */,
@@ -386,7 +394,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.ma-central";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -426,7 +434,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.ma-central";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

@@ -19,19 +19,25 @@ struct ma_centralApp: App {
                     HomeView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("home", systemImage: "house")
+                            Label("Home", systemImage: "house")
                         }
                         .tag(Tab.home)
                     EventView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("events", systemImage: "calendar")
+                            Label("Events", systemImage: "calendar")
                         }
                         .tag(Tab.events)
+                    ResourcesView()
+                        .environmentObject(appState)
+                        .tabItem {
+                            Label("Resources", systemImage: "figure.2.left.holdinghands")
+                        }
+                        .tag(Tab.resources)
                     SettingsView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("settings", systemImage: "gear")
+                            Label("Settings", systemImage: "gear")
                         }
                         .tag(Tab.settings)
                 }

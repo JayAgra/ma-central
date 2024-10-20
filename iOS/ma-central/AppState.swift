@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 enum Tab {
-    case home, events, settings
+    case home, events, resources, settings
 }
 
 struct UserData {

@@ -35,13 +35,16 @@ struct LeaderboardView: View {
                 }
             }
             Section {
-                ForEach(leaderboard, id: \.id) { user in
+                ForEach(leaderboard.prefix(100), id: \.id) { user in
                     HStack {
                         Text(String(user.username))
                         Spacer()
                         Text(String(user.lifetime))
                     }
                 }
+            }
+            Section {
+                Text("Only the top 100 users are shown.")
             }
         }
         .onAppear {
