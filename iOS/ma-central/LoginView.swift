@@ -16,95 +16,86 @@ struct LoginView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        VStack {
-            Text("M-A Central")
-                .font(.title)
-            if !loading {
-                if !create {
-                    Text("log in")
-                        .font(.title3)
+        GeometryReader { geo in
+            ZStack {
+                Image("ImagePlaceholder")
+                    .resizable()
+                    .edgesIgnoringSafeArea(.all)
+                    .scaledToFill()
+                    .blur(radius: 10)
+                    .frame(maxWidth: geo.size.width, maxHeight: geo.size.height)
+                
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    Text("M-A Central")
+                        .font(.largeTitle)
+                        .bold()
                         .padding(.top)
-                    TextField("username", text: $authData[0])
-                        .padding([.leading, .trailing, .bottom])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.username)
-                    SecureField("password", text: $authData[1])
-                        .padding()
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.password)
-                    Button("login") {
-                        authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
-                    }
-                    .padding()
-                    .font(.title3)
-                    .buttonStyle(.bordered)
-                    Button("create") {
-                        self.create = true
-                    }
-                    Button("continue as guest") {
-                        appState.currentUser = [UserPoints(id: 0, username: "Guest", lifetime: 0, score: 0)]
-                        appState.sessionOk = true
-                    }
-                    .padding()
-                } else {
-                    Text("create account")
-                        .font(.title3)
-                        .padding(.top)
-                    TextField("student id", text: $authData[3])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .keyboardType(.numberPad)
-                        .onChange(of: authData[3]) { _ in
-                            authData[3] = String(authData[3].prefix(6))
+                    if !loading {
+                        Picker("Log In/Create Account", selection: $create) {
+                            Text("Log In").tag(false)
+                            Text("Create Account").tag(true)
                         }
-                    TextField("full name", text: $authData[2])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .textContentType(.name)
-                    TextField("username", text: $authData[0])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.username)
-                    SecureField("password", text: $authData[1])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.newPassword)
-                    Button("create") {
-                        authAction(
-                            type: "create",
-                            data: [
-                                "student_id": authData[3], "full_name": authData[2], "username": authData[0],
-                                "password": authData[1],
-                            ])
+                        .pickerStyle(.segmented)
+                        Spacer()
+                        if !create {
+                            LoginTextField(text: $authData[0], placeholder: "Username")
+                                .textContentType(.username)
+                            LoginTextFieldSecure(text: $authData[1], placeholder: "Password")
+                                .textContentType(.password)
+                            Button("Log In") {
+                                authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
+                            }
+                            .padding()
+                            .font(.title3)
+                            .buttonStyle(.bordered)
+                            Button("Continue As Guest") {
+                                appState.currentUser = [UserPoints(id: 0, username: "Guest", lifetime: 0, score: 0)]
+                                appState.sessionOk = true
+                            }
+                            .padding(.horizontal)
+                        } else {
+                            LoginTextField(text: $authData[3], placeholder: "Student ID")
+                                .keyboardType(.numberPad)
+                                .onChange(of: authData[3]) { _ in
+                                    authData[3] = String(authData[3].prefix(6))
+                                }
+                            LoginTextField(text: $authData[2], placeholder: "Full Name")
+                                .textContentType(.name)
+                            LoginTextField(text: $authData[0], placeholder: "Username")
+                                .textContentType(.username)
+                            LoginTextFieldSecure(text: $authData[1], placeholder: "Password")
+                                .textContentType(.newPassword)
+                            Button("Create") {
+                                authAction(
+                                    type: "create",
+                                    data: [
+                                        "student_id": authData[3], "full_name": authData[2], "username": authData[0],
+                                        "password": authData[1],
+                                    ])
+                            }
+                            .padding()
+                            .font(.title3)
+                            .buttonStyle(.bordered)
+                        }
+                        Spacer()
+                        Text("Use of inappropriate usernames and/or inaccurate full names will result in administrative action and account deletion. Contact dev@jayagra.com for login help.")
+                            .padding()
+                            .font(.caption)
+                    } else {
+                        Spacer()
+                        ProgressView()
+                            .controlSize(.large)
+                            .padding()
+                        Spacer()
                     }
-                    .padding()
-                    .font(.title3)
-                    .buttonStyle(.bordered)
-                    Button("login") {
-                        self.create = false
-                    }
-                    .padding(.bottom)
-                    Text("Use of inappropriate usernames and/or inaccurate full names will result in administrative action and account deletion. Contact dev@jayagra.com for login help.")
-                        .padding(.all)
-                        .font(.caption)
                 }
-            } else {
-                Spacer()
-                ProgressView()
-                    .controlSize(.large)
-                    .padding()
-                Spacer()
+                .padding()
+                .frame(maxWidth: geo.size.width, maxHeight: geo.size.height)
             }
         }
-        .padding()
         .alert(
             isPresented: $showAlert,
             content: {
@@ -114,6 +105,42 @@ struct LoginView: View {
                     dismissButton: .default(Text("ok"))
                 )
             })
+    }
+    
+    struct LoginTextField: View {
+        @Binding var text: String
+        var placeholder: String
+        
+        var body: some View {
+            TextField(placeholder, text: $text)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color.black.opacity(0.5))
+                        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                )
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
+                .frame(maxWidth: .infinity)
+        }
+    }
+    
+    struct LoginTextFieldSecure: View {
+        @Binding var text: String
+        var placeholder: String
+        
+        var body: some View {
+            SecureField(placeholder, text: $text)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color.black.opacity(0.5))
+                        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                )
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
+                .frame(maxWidth: .infinity)
+        }
     }
     
     private func authAction(type: String, data: [String: String]) {
@@ -131,8 +158,12 @@ struct LoginView: View {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
                             appState.refreshUserJson()
-                            appState.sessionOk = true
-                            loading = false
+                            if type == "login" {
+                                appState.sessionOk = true
+                                loading = false
+                            } else {
+                                authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
+                            }
                         } else {
                             loading = false
                             showAlert = true
@@ -172,5 +203,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
+    LoginView().preferredColorScheme(.dark)
 }

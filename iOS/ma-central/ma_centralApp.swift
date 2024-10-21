@@ -45,6 +45,7 @@ struct ma_centralApp: App {
             } else {
                 LoginView()
                     .environmentObject(appState)
+                    .preferredColorScheme(.dark)
             }
         }
     }
