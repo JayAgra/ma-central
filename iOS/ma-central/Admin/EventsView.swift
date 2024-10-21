@@ -48,7 +48,7 @@ struct EventsView: View {
                     showConfirmDialog = true
                 }
                 Section {
-                    Text("Account Management (narcs click here)")
+                    Text("Account Management")
                 }
             }
             .navigationTitle("Admin Panel")
@@ -56,7 +56,7 @@ struct EventsView: View {
                 Alert(
                     title: Text("Delete Event \(self.lastDeletedName) (ID \(self.lastDeletedId))"),
                     message: Text(
-                        "are you sure you would like to delete this event? this action is irreversable."),
+                        "are you sure you would like to delete this event? this action is irreversible."),
                     primaryButton: .destructive(Text("Delete")) {
                         deleteEvent(id: lastDeletedId)
                     },

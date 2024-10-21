@@ -29,6 +29,7 @@
 		F5436F932C10E3AF00ED6D83 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5436F922C10E3AF00ED6D83 /* URLSessionConfiguration.swift */; };
 		F583965D2C1A0FFC0079E3C9 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */; };
 		F5932B562C194EDB007D0C18 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5932B552C194EDB007D0C18 /* CardView.swift */; };
+		F5A16C7C2CC5FDBD0030C8BE /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F5A16C7B2CC5FDBD0030C8BE /* Localizable.xcstrings */; };
 		F5A53FC02C40E89C006E4119 /* AddToWalletButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A53FBF2C40E89C006E4119 /* AddToWalletButton.swift */; };
 		F5B549F62CC5946E00DC33F9 /* ChatbotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B549F52CC5946E00DC33F9 /* ChatbotView.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,7 @@
 		F5436F922C10E3AF00ED6D83 /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F583965C2C1A0FFC0079E3C9 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		F5932B552C194EDB007D0C18 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		F5A16C7B2CC5FDBD0030C8BE /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = "ma-central/Localizable.xcstrings"; sourceTree = "<group>"; };
 		F5A53FBF2C40E89C006E4119 /* AddToWalletButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToWalletButton.swift; sourceTree = "<group>"; };
 		F5B549F52CC5946E00DC33F9 /* ChatbotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatbotView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -88,6 +90,7 @@
 		F50AD69D2C06A55E00A15A2C = {
 			isa = PBXGroup;
 			children = (
+				F5A16C7B2CC5FDBD0030C8BE /* Localizable.xcstrings */,
 				F50AD6A82C06A55E00A15A2C /* ma-central */,
 				F50AD6A72C06A55E00A15A2C /* Products */,
 			);
@@ -191,6 +194,10 @@
 			knownRegions = (
 				en,
 				Base,
+				"es-US",
+				fr,
+				"zh-Hans",
+				la,
 			);
 			mainGroup = F50AD69D2C06A55E00A15A2C;
 			packageReferences = (
@@ -212,6 +219,7 @@
 			files = (
 				F50AD6B12C06A55F00A15A2C /* Preview Assets.xcassets in Resources */,
 				F50AD6AE2C06A55F00A15A2C /* Assets.xcassets in Resources */,
+				F5A16C7C2CC5FDBD0030C8BE /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +316,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -364,6 +373,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
