@@ -31,7 +31,7 @@ struct ma_centralApp: App {
                     ResourcesView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("Resources", systemImage: "figure.2.left.holdinghands")
+                            Label("Resources", systemImage: "person.3")
                         }
                         .tag(Tab.resources)
                     SettingsView()
@@ -44,8 +44,8 @@ struct ma_centralApp: App {
                 .environmentObject(appState)
             } else {
                 LoginView()
-                    .environmentObject(appState)
                     .preferredColorScheme(.dark)
+                    .environmentObject(appState)
             }
         }
     }

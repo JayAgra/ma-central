@@ -105,6 +105,7 @@ struct LoginView: View {
                     dismissButton: .default(Text("ok"))
                 )
             })
+        .environment(\.colorScheme, .dark)
     }
     
     struct LoginTextField: View {
@@ -122,6 +123,7 @@ struct LoginView: View {
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
                 .frame(maxWidth: .infinity)
+                .environment(\.colorScheme, .dark)
         }
     }
     
@@ -140,6 +142,7 @@ struct LoginView: View {
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
                 .frame(maxWidth: .infinity)
+                .environment(\.colorScheme, .dark)
         }
     }
     
