@@ -12,6 +12,7 @@ struct ChatbotView: View {
     @State private var answerStatus: Int = 0 // 0 = no question, 1 = awaiting response, 2 = answered
     @State private var promptText = ""
     @State private var responseText = ""
+    @State private var responseAttrStr: AttributedString?
     
     var body: some View {
         NavigationView {
@@ -20,14 +21,18 @@ struct ChatbotView: View {
                     Text("Welcome to M-A's mental health resources chatbot! All questions are anonymous and are never stored")
                     Spacer()
                     VStack {
-                        TextField("Enter your question...", text: $promptText)
-                            .onSubmit {
-                                askQuestion()
-                            }
-                            .textInputAutocapitalization(.sentences)
-                            .autocorrectionDisabled(false)
-                            .frame(maxWidth: .infinity, alignment: .topLeading)
-                            .padding()
+                        if #available(iOS 16.0, *) {
+                            TextField("Enter your question...", text: $promptText, axis: .vertical)
+                                .onSubmit { askQuestion() }
+                                .frame(maxWidth: .infinity, alignment: .topLeading)
+                                .lineLimit(1...10)
+                                .padding()
+                        } else {
+                            TextField("Enter your question...", text: $promptText)
+                                .onSubmit { askQuestion() }
+                                .frame(maxWidth: .infinity, alignment: .topLeading)
+                                .padding()
+                        }
                     }
                     .background(Color.gray.opacity(0.15))
                     .cornerRadius(10)
@@ -57,9 +62,15 @@ struct ChatbotView: View {
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .padding()
                         } else {
-                            Text(responseText)
-                                .frame(maxWidth: .infinity, alignment: .topLeading)
-                                .padding()
+                            if let responseAttrStr = responseAttrStr {
+                                Text(responseAttrStr)
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                                    .padding()
+                            } else {
+                                Text(responseText)
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                                    .padding()
+                            }
                         }
                     }
                     .background(Color.accentColor.opacity(0.15))
@@ -100,11 +111,12 @@ struct ChatbotView: View {
                         let decoder = JSONDecoder()
                         let result = try decoder.decode(GptApiResponse.self, from: data)
                         DispatchQueue.main.async {
-                            responseText = result.choices.first?.message.content ?? "The chatbot sent an invalid response, which may have been empty."
+                            responseText = result.choices.first?.message.content.replacingOccurrences(of: "\n", with: "\n\n") ?? "The chatbot sent an invalid response, which may have been empty."
+                            responseAttrStr = try? AttributedString(markdown: responseText)
                             answerStatus = 2
                         }
                     } catch {
-                        responseText = "There was an error decoding the chatbot's response. \(error)"
+                        responseText = "There was an error decoding the chatbot's response.\n\n\(error)"
                         answerStatus = 2
                     }
                 } else {
@@ -114,7 +126,7 @@ struct ChatbotView: View {
             }
             .resume()
         } catch {
-            responseText = "There was an error encoding your response."
+            responseText = "There was an error encoding your response.\n\n\(error)"
             answerStatus = 2
         }
     }
