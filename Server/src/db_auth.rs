@@ -47,7 +47,7 @@ pub async fn execute_scores(pool: &Pool, query: AuthData, user_id: i64) -> Resul
 }
 
 fn get_user_scores(conn: Connection) -> PointQueryResult {
-    let stmt = conn.prepare("SELECT id, username, lifetime, score FROM users ORDER BY lifetime DESC;")?;
+    let stmt = conn.prepare("SELECT id, username, lifetime, score FROM users ORDER BY lifetime DESC LIMIT 105;")?;
     get_score_rows(stmt)
 }
 

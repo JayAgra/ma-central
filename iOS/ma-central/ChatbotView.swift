@@ -18,7 +18,7 @@ struct ChatbotView: View {
         NavigationView {
             ScrollView {
                 if answerStatus == 0 {
-                    Text("Welcome to M-A's mental health resources chatbot! All questions are anonymous and are never stored")
+                    Text("Welcome to M-A's mental health resources chatbot! All questions are anonymous and are never saved.")
                     Spacer()
                     VStack {
                         if #available(iOS 16.0, *) {

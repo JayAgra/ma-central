@@ -482,7 +482,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=23328000"))
-                    .add(("X-macsvc", "1.1.3")),
+                    .add(("X-macsvc", "1.2.0")),
             )
             .service(
                 web::resource("/apple-app-site-association")
