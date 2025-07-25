@@ -3,6 +3,12 @@
   "strings" : {
     "[1 (650) 321-5272](tel://16503215272)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[1 (650) 321-5272](tel://16503215272)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31,6 +37,12 @@
     },
     "[1 (650) 579-0350](tel://16505790350)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[1 (650) 579-0350](tel://16505790350)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -59,6 +71,12 @@
     },
     "[1 (800) 843-5200](tel://18008435200)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[1 (800) 843-5200](tel://18008435200)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -87,6 +105,12 @@
     },
     "[1 (855) 515-0595](tel://18555150595)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[1 (855) 515-0595](tel://18555150595)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -115,6 +139,12 @@
     },
     "[1 (866) 488-7386](tel://18664887386)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[1 (866) 488-7386](tel://18664887386)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -143,6 +173,12 @@
     },
     "[988](tel://988)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[988](tel://988)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -171,6 +207,12 @@
     },
     "[Counselors & Appointments](https://www.mabears.org/Counseling/index.html)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Counselors & Appointments](https://www.mabears.org/Counseling/index.html)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -199,6 +241,12 @@
     },
     "[Peace & Wellness Space](https://www.mabears.org/Counseling/Social--Emotional-Support-Staff/Wellness-Resources/index.html)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Peace & Wellness Space](https://www.mabears.org/Counseling/Social--Emotional-Support-Staff/Wellness-Resources/index.html)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -227,6 +275,12 @@
     },
     "%@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -255,6 +309,12 @@
     },
     "%lld POINTS\n" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld POINTS"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -283,6 +343,12 @@
     },
     "1" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -311,6 +377,12 @@
     },
     "2" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -339,6 +411,12 @@
     },
     "3" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -367,6 +445,12 @@
     },
     "24/7/365 support to connect students and families to treatment providers anonymously, available at the Care Solace website or by calling the number above. Services are available in 200+ languages and accomodate all types of insurance or no insurance." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24/7/365 support to connect students and families to treatment providers anonymously, available at the Care Solace website or by calling the number above. Services are available in 200+ languages and accomodate all types of insurance or no insurance."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -395,6 +479,12 @@
     },
     "Account Management" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account Management"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -423,6 +513,12 @@
     },
     "Add Student ID to Wallet" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Student ID to Wallet"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -451,6 +547,12 @@
     },
     "Additional Account Controls" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Additional Account Controls"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -479,6 +581,12 @@
     },
     "Admin Panel" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admin Panel"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -507,6 +615,12 @@
     },
     "are you sure you would like to delete this event? this action is irreversible." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you would like to delete this event? This action is irreversible."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -535,6 +649,12 @@
     },
     "Ask a new question" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask a new question"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -563,6 +683,12 @@
     },
     "Auth Error" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auth Error"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -591,6 +717,12 @@
     },
     "CA Youth Crisis Line" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CA Youth Crisis Line"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -619,6 +751,12 @@
     },
     "Cancel" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -647,6 +785,12 @@
     },
     "Care Solace" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Care Solace"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -675,6 +819,12 @@
     },
     "Chatbot" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chatbot"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -703,6 +853,12 @@
     },
     "Clear Cache" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Cache"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -731,6 +887,12 @@
     },
     "close" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -759,6 +921,12 @@
     },
     "Confirm Deletion" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm Deletion"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -787,6 +955,12 @@
     },
     "Continue" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -815,6 +989,12 @@
     },
     "Continue As Guest" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue As Guest"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -843,6 +1023,12 @@
     },
     "Create" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -871,6 +1057,12 @@
     },
     "Create Account" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Account"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -899,6 +1091,12 @@
     },
     "Create Event" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Event"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -927,6 +1125,12 @@
     },
     "Delete" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -955,6 +1159,12 @@
     },
     "Delete Account" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1017,6 +1227,12 @@
     },
     "done" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1045,6 +1261,12 @@
     },
     "Enter your question..." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter your question..."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1073,6 +1295,12 @@
     },
     "error" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1101,6 +1329,12 @@
     },
     "Event Description" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Description"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1129,6 +1363,12 @@
     },
     "Event End" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event End"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1157,6 +1397,12 @@
     },
     "Event Image URL" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Image URL"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1185,6 +1431,12 @@
     },
     "Event Start" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Start"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1213,6 +1465,12 @@
     },
     "Event Title (22 char limit)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Title (22 char limit)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1241,6 +1499,12 @@
     },
     "Events" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Events"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1269,6 +1533,12 @@
     },
     "Find a resource with our chatbot" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find a resource with our chatbot"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1297,6 +1567,12 @@
     },
     "Find the location on the map, zoom in close, and ensure the location is directly in the center. Tap to select a point." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find the location on the map, zoom in close, and ensure the location is directly in the center. Tap to select a point."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1325,6 +1601,12 @@
     },
     "For other account help (such as adding your student ID), please send an email to dev@jayagra.com containing your username, full name, and user ID (%@)." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For other account help (such as adding your student ID), please send an email to dev@jayagra.com containing your username, full name, and user ID (%@)."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1353,6 +1635,12 @@
     },
     "Home" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1381,6 +1669,12 @@
     },
     "Human Readable Location" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Human Readable Location"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1409,6 +1703,12 @@
     },
     "Kara Grief Services" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kara Grief Services"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1437,6 +1737,12 @@
     },
     "Leaderboard" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leaderboard"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1465,6 +1771,12 @@
     },
     "Log In" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log In"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1493,6 +1805,12 @@
     },
     "Log In/Create Account" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log In/Create Account"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1521,6 +1839,12 @@
     },
     "Log Out" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log Out"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1549,6 +1873,12 @@
     },
     "M-A Central" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "M-A Central"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1577,6 +1907,12 @@
     },
     "new event" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Event"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1605,6 +1941,12 @@
     },
     "Offers grief support for those dealing with loss, available at the phone number above or the Kara Grief website." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offers grief support for those dealing with loss, available at the phone number above or the Kara Grief website."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1633,6 +1975,12 @@
     },
     "ok" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1661,6 +2009,12 @@
     },
     "Only the top 100 users are shown." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only the top 100 users are shown."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1689,6 +2043,12 @@
     },
     "Open 9am to 3pm Monday through Friday. Access to mental health, substance abuse, and overall wellness services via partnerships with Star Vista, Miricenter, and Acknowledge Alliance. Drop in for crisis intervention, wellness check-ins, or to practice coping strategies. You may refer yourself or a friend by using the link above or by scanning the QR codes posted around campus." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open 9am to 3pm Monday through Friday. Access to mental health, substance abuse, and overall wellness services via partnerships with Star Vista, Miricenter, and Acknowledge Alliance. Drop in for crisis intervention, wellness check-ins, or to practice coping strategies. You may refer yourself or a friend by using the link above or by scanning the QR codes posted around campus."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1717,6 +2077,12 @@
     },
     "Or, text \"Help\" to [988](sms://988)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Or, text \"Help\" to [988](sms://988)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1745,6 +2111,12 @@
     },
     "Or, text \"START\" to [678678](sms://678678)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Or, text \"START\" to [678678](sms://678678)"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1773,6 +2145,12 @@
     },
     "Password" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1801,6 +2179,12 @@
     },
     "Point Reward" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point Reward"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1829,6 +2213,12 @@
     },
     "Provides crisis intervention for all youth." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Provides crisis intervention for all youth."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1857,6 +2247,12 @@
     },
     "pts" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pts"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1885,6 +2281,12 @@
     },
     "Resources" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resources"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1913,6 +2315,12 @@
     },
     "Scanning for %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanning for %@"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1941,6 +2349,12 @@
     },
     "Settings" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1969,6 +2383,12 @@
     },
     "Star Vista S.O.S." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Star Vista S.O.S."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1997,6 +2417,12 @@
     },
     "Suicide & Crisis Lifeline" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suicide & Crisis Lifeline"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2025,6 +2451,12 @@
     },
     "The event image URL must be a direct URL to a publicly accessible image, either 640x320 or 1280x640." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The event image URL must be a direct URL to a publicly accessible image, either 640x320 or 1280x640."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2053,6 +2485,12 @@
     },
     "The school has counselors available by appointment via the link above or the counseling menu on [mabears.org](mabears.org). For 504 plan support, students can reach out to Intervention Counselors Kerry Larratt (A-L) or Andrea Booth (M-Z) for personalized assistance." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The school has counselors available by appointment via the link above or the counseling menu on [mabears.org](mabears.org). For 504 plan support, students can reach out to Intervention Counselors Kerry Larratt (A-L) or Andrea Booth (M-Z) for personalized assistance."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2081,6 +2519,12 @@
     },
     "There are no more options for your account at this time. Please email dev@jayagra.com for assistance with account related questions." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no more options for your account at this time. Please email dev@jayagra.com for assistance with account related questions."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2109,6 +2553,12 @@
     },
     "this action is irreversable" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action is irreversable"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2137,6 +2587,12 @@
     },
     "Ticket invalid" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ticket invalid"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2165,6 +2621,12 @@
     },
     "Ticket is valid" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ticket is valid"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2193,6 +2655,12 @@
     },
     "Trevor Project Lifeline" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trevor Project Lifeline"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2221,6 +2689,12 @@
     },
     "Use of inappropriate usernames and/or inaccurate full names will result in administrative action and account deletion. Contact dev@jayagra.com for login help." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use of inappropriate usernames and/or inaccurate full names will result in administrative action and account deletion. Contact dev@jayagra.com for login help."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2249,6 +2723,12 @@
     },
     "Username" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Username"
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2277,6 +2757,12 @@
     },
     "Validating ticket..." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validating ticket..."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2305,6 +2791,12 @@
     },
     "Welcome to M-A's mental health resources chatbot! All questions are anonymous and are never saved." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to M-A's mental health resources chatbot! All questions are anonymous and are never saved."
+          }
+        },
         "es-US" : {
           "stringUnit" : {
             "state" : "translated",
